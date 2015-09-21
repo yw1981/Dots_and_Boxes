@@ -1,4 +1,4 @@
-describe("In TicTacToe", function () {
+describe("In Dots_and_Boxes", function () {
     function expectMove(turnIndexBeforeMove, stateBeforeMove, move, isOk) {
         expect(gameLogic.isMoveOk({
             turnIndexBeforeMove: turnIndexBeforeMove,

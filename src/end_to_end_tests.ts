@@ -1,6 +1,6 @@
 /* https://github.com/angular/protractor/blob/master/docs/toc.md */
 
-describe('TicTacToe', function() {
+describe('Dots_and_Boxes', function() {
   function getPage(page: string) {
     browser.get('http://localhost:9000/' + page);
     browser.sleep(200); // Wait for the first updateUI to arrive.
@@ -41,10 +41,10 @@ describe('TicTacToe', function() {
   }
 
   it('should have a title', function () {
-    expect(browser.getTitle()).toEqual('TicTacToe');
+    expect(browser.getTitle()).toEqual('Dots_and_Boxes');
   });
 
-  it('should have an empty TicTacToe board', function () {
+  it('should have an empty Dots_and_Boxes board', function () {
     expectBoard(
         [['', '', ''],
          ['', '', ''],

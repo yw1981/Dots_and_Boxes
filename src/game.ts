@@ -7,7 +7,7 @@ module game {
   export var isHelpModalShown: boolean = false;
 
   export function init() {
-    console.log("Translation of 'RULES_OF_TICTACTOE' is " + translate('RULES_OF_TICTACTOE'));
+    console.log("Translation of 'RULES_OF_DOTS_AND_BOXES' are " + translate('RULES_OF_DOTS_AND_BOXES'));
     resizeGameAreaService.setWidthToHeight(1);
     gameService.setGame({
       minNumberOfPlayers: 2,
@@ -67,7 +67,7 @@ module game {
     }
   }
 
-  export function cellClicked(row: number, col: number): void {
+  export function cellClicked(dir: string, row: number, col: number): void {
     log.info(["Clicked on cell:", row, col]);
     if (window.location.search === '?throwException') { // to test encoding a stack trace with sourcemap
       throw new Error("Throwing the error because URL has '?throwException'");
@@ -76,26 +76,26 @@ module game {
       return;
     }
     try {
-      var move = gameLogic.createMove(state.board, row, col, turnIndex);
+      var move = gameLogic.createMove(state.board, dir, row, col, turnIndex);
       canMakeMove = false; // to prevent making another move
       gameService.makeMove(move);
     } catch (e) {
-      log.info(["Cell is already full in position:", row, col]);
+      log.info(["Cell is already full in position:", dir, row, col]);
       return;
     }
   }
 
-  export function shouldShowImage(row: number, col: number): boolean {
-    var cell = state.board[row][col];
+  export function shouldShowImage(row: number, col: number): boolean { //may also add shouldShowEdge function later
+    var cell = state.board.color[row][col];
     return cell !== "";
   }
 
   export function isPieceX(row: number, col: number): boolean {
-    return state.board[row][col] === 'X';
+    return state.board.color[row][col] === 'YOU';
   }
 
   export function isPieceO(row: number, col: number): boolean {
-    return state.board[row][col] === 'O';
+    return state.board.color[row][col] === 'ME';
   }
 
   export function shouldSlowlyAppear(row: number, col: number): boolean {
@@ -109,9 +109,9 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
   .run(['initGameServices', function (initGameServices: any) {
   $rootScope['game'] = game;
   translate.setLanguage('en',  {
-    RULES_OF_TICTACTOE: "Rules of TicTacToe",
-    RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
-    RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
+    RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
+    RULES_SLIDE1: "You and your opponent take turns to mark one empty edge but cannot complete a cell.",
+    RULES_SLIDE2: "Whoever completes a cell earn one score. When all edges are filled, the player with higher score wins",
     CLOSE: "Close"
   });
   game.init();

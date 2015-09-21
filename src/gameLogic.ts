@@ -1,30 +1,49 @@
-type Board = string[][];
+interface Board {
+  isGameOver: boolean;
+  switchTurn: boolean;
+  hor: number[][],
+  ver: number[][],
+  color: string[][], //color/occupier of each cell/box
+  sum: number[][]; // sum of all filled edges for each cell
+  sumAllEdges: number; //help to identify if game is over
+  score: number[]; // score[0] = Your score, score[1] = my score
+  chains: number[] //don't check chains yet, leave it for when writing AI
+}
 interface BoardDelta {
+  dir: string;
   row: number;
   col: number;
 }
 interface IState {
   board?: Board;
-  delta?: BoardDelta;
+  delta?: BoardDelta
 }
 
 module gameLogic {
 
-  /** Returns the initial TicTacToe board, which is a 3x3 matrix containing ''. */
+  /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing ''. */
   export function getInitialBoard(): Board {
-    return [['', '', ''],
-            ['', '', ''],
-            ['', '', '']];
+    return { isGameOver = false;
+             switchTurn = true;
+             'hor':[ [0,0,0], [0,0,0], [0,0,0], [0,0,0] ],
+	           'ver':[ [0,0,0,0], [0,0,0,0], [0,0,0,0] ],
+	           'color': [ ['','',''], ['','',''], ['','',''] ],
+             'sum': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+             sumAllEdges = 0;
+             'score': [0, 0],
+             'chains': []
+           } ;
   }
 
   /**
    * Returns true if the game ended in a tie because there are no empty cells.
+   * Since this is a 3x3 board with two players, there will be no tie condition.
    * E.g., isTie returns true for the following board:
    *     [['X', 'O', 'X'],
    *      ['X', 'O', 'O'],
    *      ['O', 'X', 'X']]
    */
-  function isTie(board: Board): boolean {
+  /* function isTie(board: Board): boolean {
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 3; j++) {
         if (board[i][j] === '') {
@@ -35,7 +54,7 @@ module gameLogic {
     }
     // No empty cells, so we have a tie!
     return true;
-  }
+  } */
 
   /**
    * Return the winner (either 'X' or 'O') or '' if there is no winner.
@@ -45,48 +64,33 @@ module gameLogic {
    *      ['X', 'O', ''],
    *      ['X', '', '']]
    */
-  function getWinner(board: Board): string {
-    var boardString = '';
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
-        var cell = board[i][j];
-        boardString += cell === '' ? ' ' : cell;
-      }
+
+  /*function getWinner(board: Board): string { //check the current winner after each createMove
+    if board.score[0]>board.score[1] {
+      return 'YOU';
     }
-    var win_patterns = [
-      'XXX......',
-      '...XXX...',
-      '......XXX',
-      'X..X..X..',
-      '.X..X..X.',
-      '..X..X..X',
-      'X...X...X',
-      '..X.X.X..'
-    ];
-    for (i = 0; i < win_patterns.length; i++) {
-      var win_pattern = win_patterns[i];
-      var x_regexp = new RegExp(win_pattern);
-      var o_regexp = new RegExp(win_pattern.replace(/X/g, 'O'));
-      if (x_regexp.test(boardString)) {
-        return 'X';
-      }
-      if (o_regexp.test(boardString)) {
-        return 'O';
-      }
-    }
-    return '';
-  }
+    else return 'ME';
+  }*?
 
   /**
-   * Returns all the possible moves for the given board and turnIndexBeforeMove.
+   * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
    * Returns an empty array if the game is over.
    */
   export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
     var possibleMoves: IMove[] = [];
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 4; i++) {
       for (var j = 0; j < 3; j++) {
         try {
-          possibleMoves.push(createMove(board, i, j, turnIndexBeforeMove));
+          possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
+        } catch (e) {
+          // The cell in that position was full.
+        }
+      }
+    }
+    for (var i = 0; i < 3; i++) {
+      for (var j = 0; j < 4; j++) {
+        try {
+          possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
         } catch (e) {
           // The cell in that position was full.
         }
@@ -95,35 +99,105 @@ module gameLogic {
     return possibleMoves;
   }
 
+  function updateBoard(board: Board, dir: string, row: number, col: number, turnIndexBeforeMove: number):Board {
+    var boardAfterMove = angular.copy(board);
+    if (dir === 'hor') {
+      boardAfterMove.hor[row][col] = 1;
+      if (row !== 0) { //if not any cell on top line, check upper cell's sum
+        boardAfterMove.sum[row-1][col] += 1;
+        if (boardAfterMove.sum[row-1][col] === 4) {
+          switchTurn = false;
+          if (turnIndexBeforeMove === 0) {
+            boardAfterMove.color[row-1][col] = 'YOU';
+            boardAfterMove.score[0]++;
+          }
+          else {
+            boardAfterMove.color[row-1][col] = 'ME';
+            boardAfterMove.score[1]++;
+          }
+        }
+      }
+      boardAfterMove.sum[row][col] += 1; // check lower cell's sum
+      if (boardAfterMove.sum[row][col] === 4) {
+        switchTurn = false;
+        if (turnIndexBeforeMove === 0) {
+          boardAfterMove.color[row][col] = 'YOU';
+          boardAfterMove.score[0]++;
+        }
+        else {
+          boardAfterMove.color[row][col] = 'ME';
+          boardAfterMove.score[1]++;
+        }
+      }
+    }
+
+    else { // else if (dir === 'ver')
+      boardAfterMove.ver[row][col] = 1;
+      if (col !== 0) {
+        boardAfterMove.sum[row][col-1] += 1;
+        if (boardAfterMove.sum[row][col-1] === 4) {
+          switchTurn = false;
+          if (turnIndexBeforeMove === 0) {
+            boardAfterMove.color[row][col-1] = 'YOU';
+            boardAfterMove.score[0]++;
+          }
+          else {
+            boardAfterMove.color[row-1][col] = 'ME';
+            boardAfterMove.score[1]++;
+          }
+        }
+      }
+      boardAfterMove.sum[row][col] += 1;
+      if (boardAfterMove.sum[row][col] === 4) {
+        switchTurn = false;
+        if (turnIndexBeforeMove === 0) {
+          boardAfterMove.color[row][col] = 'YOU';
+          boardAfterMove.score[0]++;
+        }
+        else {
+          boardAfterMove.color[row][col] = 'ME';
+          boardAfterMove.score[1]++;
+        }
+      }
+    }
+    boardAfterMove.sumAllEdges++;
+    if (boardAfterMove.sumAllEdges === 24) {
+      boardAfterMove.isGameOver = true;
+    }
+    return boardAfterMove;
+  }
   /**
    * Returns the move that should be performed when player
    * with index turnIndexBeforeMove makes a move in cell row X col.
    */
-  export function createMove(
-      board: Board, row: number, col: number, turnIndexBeforeMove: number): IMove {
+  export function createMove( // remember to change the signature of createMove in other files
+      board: Board, dir: string, row: number, col: number, turnIndexBeforeMove: number): IMove {
     if (!board) {
       // Initially (at the beginning of the match), the board in state is undefined.
       board = getInitialBoard();
     }
-    if (board[row][col] !== '') {
+    if ((dir === 'hor' && board.hor[row][col] === 1) || (dir === 'ver' && board.ver[row][col] === 1)) {
       throw new Error("One can only make a move in an empty position!");
     }
-    if (getWinner(board) !== '' || isTie(board)) {
+    if (getWinner(board) !== '') {
       throw new Error("Can only make a move if the game is not over!");
     }
-    var boardAfterMove = angular.copy(board);
-    boardAfterMove[row][col] = turnIndexBeforeMove === 0 ? 'X' : 'O';
-    var winner = getWinner(boardAfterMove);
+    var boardAfterMove:Board = updateBoard(board, dir, row, col, turnIndexBeforeMove);
+    //var winner = getWinner(boardAfterMove);
     var firstOperation: IOperation;
-    if (winner !== '' || isTie(boardAfterMove)) {
+    if (boardAfterMove.isGameOver) {
       // Game over.
-      firstOperation = {endMatch: {endMatchScores:
-        winner === 'X' ? [1, 0] : winner === 'O' ? [0, 1] : [0, 0]}};
+      firstOperation = {endMatch: {endMatchScores: boardAfterMove.score}};
     } else {
       // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
-      firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
+      if (switchTurn) {
+        firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
+      }
+      else {
+        firstOperation = {setTurn: {turnIndex: turnIndexBeforeMove}}; // if switchTurn is false, do not change turnIndex
+      }
     }
-    var delta: BoardDelta = {row: row, col: col};
+    var delta: BoardDelta = {dir: dir, row: row, col: col};
     return [firstOperation,
             {set: {key: 'board', value: boardAfterMove}},
             {set: {key: 'delta', value: delta}}];
@@ -133,7 +207,7 @@ module gameLogic {
     var move = params.move;
     var turnIndexBeforeMove = params.turnIndexBeforeMove;
     var stateBeforeMove: IState = params.stateBeforeMove;
-    // The state and turn after move are not needed in TicTacToe (or in any game where all state is public).
+    // The state and turn after move are not needed in Dots_and_Boxes (or in any game where all state is public).
     //var turnIndexAfterMove = params.turnIndexAfterMove;
     //var stateAfterMove = params.stateAfterMove;
 
@@ -144,11 +218,12 @@ module gameLogic {
       // [{setTurn: {turnIndex : 1},
       //  {set: {key: 'board', value: [['X', '', ''], ['', '', ''], ['', '', '']]}},
       //  {set: {key: 'delta', value: {row: 0, col: 0}}}]
-      var deltaValue: BoardDelta = move[2].set.value;
+      var deltaValue: BoardDelta = move[2].set.value; //see createMove's return signature
+      var dir = dletaValue.dir;
       var row = deltaValue.row;
       var col = deltaValue.col;
       var board = stateBeforeMove.board;
-      var expectedMove = createMove(board, row, col, turnIndexBeforeMove);
+      var expectedMove = createMove(board, dir, row, col, turnIndexBeforeMove);
       if (!angular.equals(move, expectedMove)) {
         return false;
       }

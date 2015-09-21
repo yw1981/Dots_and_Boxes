@@ -1,6 +1,6 @@
 var gameLogic;
 (function (gameLogic) {
-    /** Returns the initial TicTacToe board, which is a 3x3 matrix containing ''. */
+    /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing ''. */
     function getInitialBoard() {
         return [['', '', ''],
             ['', '', ''],
@@ -120,7 +120,7 @@ var gameLogic;
         var move = params.move;
         var turnIndexBeforeMove = params.turnIndexBeforeMove;
         var stateBeforeMove = params.stateBeforeMove;
-        // The state and turn after move are not needed in TicTacToe (or in any game where all state is public).
+        // The state and turn after move are not needed in Dots_and_Boxes (or in any game where all state is public).
         //var turnIndexAfterMove = params.turnIndexAfterMove;
         //var stateAfterMove = params.stateAfterMove;
         // We can assume that turnIndexBeforeMove and stateBeforeMove are legal, and we need
@@ -156,7 +156,7 @@ var gameLogic;
     var turnIndex = null;
     game.isHelpModalShown = false;
     function init() {
-        console.log("Translation of 'RULES_OF_TICTACTOE' is " + translate('RULES_OF_TICTACTOE'));
+        console.log("Translation of 'RULES_OF_Dots_and_Boxes' is " + translate('RULES_OF_Dots_and_Boxes'));
         resizeGameAreaService.setWidthToHeight(1);
         gameService.setGame({
             minNumberOfPlayers: 2,
@@ -253,7 +253,7 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
     .run(['initGameServices', function (initGameServices) {
         $rootScope['game'] = game;
         translate.setLanguage('en', {
-            RULES_OF_TICTACTOE: "Rules of TicTacToe",
+            RULES_OF_Dots_and_Boxes: "Rules of Dots_and_Boxes",
             RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
             RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
             CLOSE: "Close"
@@ -269,8 +269,8 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
      * millisecondsLimit is a time limit, and maxDepth is a depth limit.
      */
     function createComputerMove(board, playerIndex, alphaBetaLimits) {
-        // We use alpha-beta search, where the search states are TicTacToe moves.
-        // Recal that a TicTacToe move has 3 operations:
+        // We use alpha-beta search, where the search states are Dots_and_Boxes moves.
+        // Recal that a Dots_and_Boxes move has 3 operations:
         // 0) endMatch or setTurn
         // 1) {set: {key: 'board', value: ...}}
         // 2) {set: {key: 'delta', value: ...}}]

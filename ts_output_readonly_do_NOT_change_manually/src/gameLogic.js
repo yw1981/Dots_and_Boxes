@@ -1,31 +1,36 @@
 var gameLogic;
 (function (gameLogic) {
-    /** Returns the initial TicTacToe board, which is a 3x3 matrix containing ''. */
+    /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing ''. */
     function getInitialBoard() {
-        return [['', '', ''],
-            ['', '', ''],
-            ['', '', '']];
+        return { 'hor': [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            'ver': [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+            'color': [['', '', ''], ['', '', ''], ['', '', '']],
+            'cellEdgeSum': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            'score': [0, 0],
+            'chains': []
+        };
     }
     gameLogic.getInitialBoard = getInitialBoard;
     /**
      * Returns true if the game ended in a tie because there are no empty cells.
+     * Since this is a 3x3 board with two players, there will be no tie condition.
      * E.g., isTie returns true for the following board:
      *     [['X', 'O', 'X'],
      *      ['X', 'O', 'O'],
      *      ['O', 'X', 'X']]
      */
-    function isTie(board) {
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < 3; j++) {
-                if (board[i][j] === '') {
-                    // If there is an empty cell then we do not have a tie.
-                    return false;
-                }
-            }
+    /* function isTie(board: Board): boolean {
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          if (board[i][j] === '') {
+            // If there is an empty cell then we do not have a tie.
+            return false;
+          }
         }
-        // No empty cells, so we have a tie!
-        return true;
-    }
+      }
+      // No empty cells, so we have a tie!
+      return true;
+    } */
     /**
      * Return the winner (either 'X' or 'O') or '' if there is no winner.
      * The board is a matrix of size 3x3 containing either 'X', 'O', or ''.
@@ -87,19 +92,24 @@ var gameLogic;
      * Returns the move that should be performed when player
      * with index turnIndexBeforeMove makes a move in cell row X col.
      */
-    function createMove(board, row, col, turnIndexBeforeMove) {
+    function createMove(board, dir, row, col, turnIndexBeforeMove) {
         if (!board) {
             // Initially (at the beginning of the match), the board in state is undefined.
             board = getInitialBoard();
         }
-        if (board[row][col] !== '') {
+        if ((dir === 'hor' && board.hor[row][col] === 1) || (dir === 'ver' && board.ver[row][col] === 1)) {
             throw new Error("One can only make a move in an empty position!");
         }
-        if (getWinner(board) !== '' || isTie(board)) {
+        if (getWinner(board) !== '') {
             throw new Error("Can only make a move if the game is not over!");
         }
         var boardAfterMove = angular.copy(board);
-        boardAfterMove[row][col] = turnIndexBeforeMove === 0 ? 'X' : 'O';
+        if (dir === 'hor') {
+            boardAfterMove.hor[row][col] = 1;
+        }
+        else if (dir === 'ver') {
+            boardAfterMove.ver[row][col] = 1;
+        }
         var winner = getWinner(boardAfterMove);
         var firstOperation;
         if (winner !== '' || isTie(boardAfterMove)) {
@@ -110,7 +120,7 @@ var gameLogic;
             // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
             firstOperation = { setTurn: { turnIndex: 1 - turnIndexBeforeMove } };
         }
-        var delta = { row: row, col: col };
+        var delta = { dir: dir, row: row, col: col };
         return [firstOperation,
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: delta } }];
@@ -120,7 +130,7 @@ var gameLogic;
         var move = params.move;
         var turnIndexBeforeMove = params.turnIndexBeforeMove;
         var stateBeforeMove = params.stateBeforeMove;
-        // The state and turn after move are not needed in TicTacToe (or in any game where all state is public).
+        // The state and turn after move are not needed in Dots_and_Boxes (or in any game where all state is public).
         //var turnIndexAfterMove = params.turnIndexAfterMove;
         //var stateAfterMove = params.stateAfterMove;
         // We can assume that turnIndexBeforeMove and stateBeforeMove are legal, and we need
@@ -134,7 +144,7 @@ var gameLogic;
             var row = deltaValue.row;
             var col = deltaValue.col;
             var board = stateBeforeMove.board;
-            var expectedMove = createMove(board, row, col, turnIndexBeforeMove);
+            var expectedMove = createMove(board, deltaValue.dir, row, col, turnIndexBeforeMove);
             if (!angular.equals(move, expectedMove)) {
                 return false;
             }

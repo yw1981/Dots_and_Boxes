@@ -1,4 +1,4 @@
-TicTacToe
+Dots_and_Boxes
 =========
 Yuxin modified
-TicTacToe game
+Dots_and_Boxes game

@@ -7,8 +7,8 @@ var aiService;
      * millisecondsLimit is a time limit, and maxDepth is a depth limit.
      */
     function createComputerMove(board, playerIndex, alphaBetaLimits) {
-        // We use alpha-beta search, where the search states are TicTacToe moves.
-        // Recal that a TicTacToe move has 3 operations:
+        // We use alpha-beta search, where the search states are Dots_and_Boxes moves.
+        // Recal that a Dots_and_Boxes move has 3 operations:
         // 0) endMatch or setTurn
         // 1) {set: {key: 'board', value: ...}}
         // 2) {set: {key: 'delta', value: ...}}]
