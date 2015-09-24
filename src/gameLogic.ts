@@ -21,18 +21,33 @@ interface IState {
 
 module gameLogic {
 
-  /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing ''. */
+  const ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+  const COLSIZE = 3;
+  /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing 24 edges and 9 empty cells */
   export function getInitialBoard(): Board {
-    return { isGameOver: false,
-             switchTurn: true,
-             'hor':[ [0,0,0], [0,0,0], [0,0,0], [0,0,0] ],
-	           'ver':[ [0,0,0,0], [0,0,0,0], [0,0,0,0] ],
-	           'color': [ ['','',''], ['','',''], ['','',''] ],
-             'sum': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-             sumAllEdges: 0,
-             'score': [0, 0],
-             'chains': []
-           } ;
+    var board = <Board>{};
+    board.isGameOver = false;
+    board.switchTurn = true;
+    board.sumAllEdges = 0;
+    board.score = [0, 0];
+    board.chains = [];
+    for (var i = 0; i < ROWSIZE+1; ++i) {
+      for (var j = 0; j < COLSIZE; ++j) {
+        board.hor[i][j] = 0;
+      }
+    }
+    for (var i = 0; i < ROWSIZE; ++i) {
+      for (var j = 0; j < COLSIZE+1; ++j) {
+        board.ver[i][j] = 0;
+      }
+    }
+    for (var i = 0; i < ROWSIZE; ++i) {
+      for (var j = 0; j < COLSIZE; ++j) {
+        board.color[i][j] = '';
+        board.sum[i][j] = 0;
+      }
+    }
+    return board;
   }
 
   /**
@@ -78,8 +93,8 @@ module gameLogic {
    */
   export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
     var possibleMoves: IMove[] = [];
-    for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 3; j++) {
+    for (var i = 0; i < ROWSIZE+1; i++) {
+      for (var j = 0; j < COLSIZE; j++) {
         try {
           possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
         } catch (e) {
@@ -87,8 +102,8 @@ module gameLogic {
         }
       }
     }
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 4; j++) {
+    for (var i = 0; i < ROWSIZE; i++) {
+      for (var j = 0; j < COLSIZE+1; j++) {
         try {
           possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
         } catch (e) {
