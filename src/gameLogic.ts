@@ -1,12 +1,12 @@
 interface Board {
-  isGameOver: boolean;
-  switchTurn: boolean;
+  isGameOver: boolean,
+  switchTurn: boolean,
   hor: number[][],
   ver: number[][],
   color: string[][], //color/occupier of each cell/box
-  sum: number[][]; // sum of all filled edges for each cell
-  sumAllEdges: number; //help to identify if game is over
-  score: number[]; // score[0] = Your score, score[1] = my score
+  sum: number[][], // sum of all filled edges for each cell
+  sumAllEdges: number, //help to identify if game is over
+  score: number[], // score[0] = Your score, score[1] = my score
   chains: number[] //don't check chains yet, leave it for when writing AI
 }
 interface BoardDelta {
@@ -23,13 +23,13 @@ module gameLogic {
 
   /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing ''. */
   export function getInitialBoard(): Board {
-    return { isGameOver = false;
-             switchTurn = true;
+    return { isGameOver: false,
+             switchTurn: true,
              'hor':[ [0,0,0], [0,0,0], [0,0,0], [0,0,0] ],
 	           'ver':[ [0,0,0,0], [0,0,0,0], [0,0,0,0] ],
 	           'color': [ ['','',''], ['','',''], ['','',''] ],
              'sum': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-             sumAllEdges = 0;
+             sumAllEdges: 0,
              'score': [0, 0],
              'chains': []
            } ;

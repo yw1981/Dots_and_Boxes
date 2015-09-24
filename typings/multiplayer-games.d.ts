@@ -67,8 +67,6 @@ interface IUpdateUI extends IIsMoveOk {
 interface IGame {
   isMoveOk(move: IIsMoveOk): boolean;
   updateUI(update: IUpdateUI): void;
-  minNumberOfPlayers: number;
-  maxNumberOfPlayers: number;
 }
 interface IGameService {
   setGame(game: IGame): void;
@@ -86,7 +84,7 @@ interface IAlphaBetaService {
     playerIndex: number,
     getNextStates: (move: IMove, playerIndex: number) => IMove[],
     getStateScoreForIndex0: (move: IMove, playerIndex: number) => number,
-    // If you want to see debugging output in the console, then surf to game.html?debug
+    // If you want to see debugging output in the console, then surf to index.html?debug
     getDebugStateToString: (move: IMove) => string,
     alphaBetaLimits: IAlphaBetaLimits): IMove;
 }
