@@ -2,10 +2,13 @@ var gameLogic;
 (function (gameLogic) {
     /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing ''. */
     function getInitialBoard() {
-        return { 'hor': [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
+        return { isGameOver: false,
+            switchTurn: true,
+            'hor': [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]],
             'ver': [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
             'color': [['', '', ''], ['', '', ''], ['', '', '']],
-            'cellEdgeSum': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            'sum': [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            sumAllEdges: 0,
             'score': [0, 0],
             'chains': []
         };
@@ -39,47 +42,32 @@ var gameLogic;
      *      ['X', 'O', ''],
      *      ['X', '', '']]
      */
-    function getWinner(board) {
-        var boardString = '';
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < 3; j++) {
-                var cell = board[i][j];
-                boardString += cell === '' ? ' ' : cell;
-            }
-        }
-        var win_patterns = [
-            'XXX......',
-            '...XXX...',
-            '......XXX',
-            'X..X..X..',
-            '.X..X..X.',
-            '..X..X..X',
-            'X...X...X',
-            '..X.X.X..'
-        ];
-        for (i = 0; i < win_patterns.length; i++) {
-            var win_pattern = win_patterns[i];
-            var x_regexp = new RegExp(win_pattern);
-            var o_regexp = new RegExp(win_pattern.replace(/X/g, 'O'));
-            if (x_regexp.test(boardString)) {
-                return 'X';
-            }
-            if (o_regexp.test(boardString)) {
-                return 'O';
-            }
-        }
-        return '';
-    }
+    /*function getWinner(board: Board): string { //check the current winner after each createMove
+      if board.score[0]>board.score[1] {
+        return 'YOU';
+      }
+      else return 'ME';
+    }*?
+  
     /**
-     * Returns all the possible moves for the given board and turnIndexBeforeMove.
+     * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
      * Returns an empty array if the game is over.
      */
     function getPossibleMoves(board, turnIndexBeforeMove) {
         var possibleMoves = [];
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 3; j++) {
                 try {
-                    possibleMoves.push(createMove(board, i, j, turnIndexBeforeMove));
+                    possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
+                }
+                catch (e) {
+                }
+            }
+        }
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < 4; j++) {
+                try {
+                    possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
                 }
                 catch (e) {
                 }
@@ -88,11 +76,78 @@ var gameLogic;
         return possibleMoves;
     }
     gameLogic.getPossibleMoves = getPossibleMoves;
+    function updateBoard(board, dir, row, col, turnIndexBeforeMove) {
+        var boardAfterMove = angular.copy(board);
+        if (dir === 'hor') {
+            boardAfterMove.hor[row][col] = 1;
+            if (row !== 0) {
+                boardAfterMove.sum[row - 1][col] += 1;
+                if (boardAfterMove.sum[row - 1][col] === 4) {
+                    boardAfterMove.switchTurn = false;
+                    if (turnIndexBeforeMove === 0) {
+                        boardAfterMove.color[row - 1][col] = 'YOU';
+                        boardAfterMove.score[0]++;
+                    }
+                    else {
+                        boardAfterMove.color[row - 1][col] = 'ME';
+                        boardAfterMove.score[1]++;
+                    }
+                }
+            }
+            boardAfterMove.sum[row][col] += 1; // check lower cell's sum
+            if (boardAfterMove.sum[row][col] === 4) {
+                boardAfterMove.switchTurn = false;
+                if (turnIndexBeforeMove === 0) {
+                    boardAfterMove.color[row][col] = 'YOU';
+                    boardAfterMove.score[0]++;
+                }
+                else {
+                    boardAfterMove.color[row][col] = 'ME';
+                    boardAfterMove.score[1]++;
+                }
+            }
+        }
+        else {
+            boardAfterMove.ver[row][col] = 1;
+            if (col !== 0) {
+                boardAfterMove.sum[row][col - 1] += 1;
+                if (boardAfterMove.sum[row][col - 1] === 4) {
+                    boardAfterMove.switchTurn = false;
+                    if (turnIndexBeforeMove === 0) {
+                        boardAfterMove.color[row][col - 1] = 'YOU';
+                        boardAfterMove.score[0]++;
+                    }
+                    else {
+                        boardAfterMove.color[row - 1][col] = 'ME';
+                        boardAfterMove.score[1]++;
+                    }
+                }
+            }
+            boardAfterMove.sum[row][col] += 1;
+            if (boardAfterMove.sum[row][col] === 4) {
+                boardAfterMove.switchTurn = false;
+                if (turnIndexBeforeMove === 0) {
+                    boardAfterMove.color[row][col] = 'YOU';
+                    boardAfterMove.score[0]++;
+                }
+                else {
+                    boardAfterMove.color[row][col] = 'ME';
+                    boardAfterMove.score[1]++;
+                }
+            }
+        }
+        boardAfterMove.sumAllEdges++;
+        if (boardAfterMove.sumAllEdges === 24) {
+            boardAfterMove.isGameOver = true;
+        }
+        return boardAfterMove;
+    }
     /**
      * Returns the move that should be performed when player
      * with index turnIndexBeforeMove makes a move in cell row X col.
      */
-    function createMove(board, dir, row, col, turnIndexBeforeMove) {
+    function createMove(// remember to change the signature of createMove in other files
+        board, dir, row, col, turnIndexBeforeMove) {
         if (!board) {
             // Initially (at the beginning of the match), the board in state is undefined.
             board = getInitialBoard();
@@ -100,25 +155,21 @@ var gameLogic;
         if ((dir === 'hor' && board.hor[row][col] === 1) || (dir === 'ver' && board.ver[row][col] === 1)) {
             throw new Error("One can only make a move in an empty position!");
         }
-        if (getWinner(board) !== '') {
+        if (board.isGameOver) {
             throw new Error("Can only make a move if the game is not over!");
         }
-        var boardAfterMove = angular.copy(board);
-        if (dir === 'hor') {
-            boardAfterMove.hor[row][col] = 1;
-        }
-        else if (dir === 'ver') {
-            boardAfterMove.ver[row][col] = 1;
-        }
-        var winner = getWinner(boardAfterMove);
+        var boardAfterMove = updateBoard(board, dir, row, col, turnIndexBeforeMove);
+        //var winner = getWinner(boardAfterMove);
         var firstOperation;
-        if (winner !== '' || isTie(boardAfterMove)) {
+        if (boardAfterMove.isGameOver) {
             // Game over.
-            firstOperation = { endMatch: { endMatchScores: winner === 'X' ? [1, 0] : winner === 'O' ? [0, 1] : [0, 0] } };
+            firstOperation = { endMatch: { endMatchScores: boardAfterMove.score } };
         }
         else {
             // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
-            firstOperation = { setTurn: { turnIndex: 1 - turnIndexBeforeMove } };
+            if (boardAfterMove.switchTurn) {
+                firstOperation = { setTurn: { turnIndex: 1 - turnIndexBeforeMove } };
+            }
         }
         var delta = { dir: dir, row: row, col: col };
         return [firstOperation,
@@ -140,11 +191,12 @@ var gameLogic;
             // [{setTurn: {turnIndex : 1},
             //  {set: {key: 'board', value: [['X', '', ''], ['', '', ''], ['', '', '']]}},
             //  {set: {key: 'delta', value: {row: 0, col: 0}}}]
-            var deltaValue = move[2].set.value;
+            var deltaValue = move[2].set.value; //see createMove's return signature
+            var dir = deltaValue.dir;
             var row = deltaValue.row;
             var col = deltaValue.col;
             var board = stateBeforeMove.board;
-            var expectedMove = createMove(board, deltaValue.dir, row, col, turnIndexBeforeMove);
+            var expectedMove = createMove(board, dir, row, col, turnIndexBeforeMove);
             if (!angular.equals(move, expectedMove)) {
                 return false;
             }

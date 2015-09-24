@@ -7,7 +7,7 @@ var game;
     var turnIndex = null;
     game.isHelpModalShown = false;
     function init() {
-        console.log("Translation of 'RULES_OF_Dots_and_Boxes' is " + translate('RULES_OF_Dots_and_Boxes'));
+        console.log("Translation of 'RULES_OF_DOTS_AND_BOXES' are " + translate('RULES_OF_DOTS_AND_BOXES'));
         resizeGameAreaService.setWidthToHeight(1);
         gameService.setGame({
             minNumberOfPlayers: 2,
@@ -61,7 +61,7 @@ var game;
             }
         }
     }
-    function cellClicked(row, col) {
+    function cellClicked(dir, row, col) {
         log.info(["Clicked on cell:", row, col]);
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
@@ -70,27 +70,27 @@ var game;
             return;
         }
         try {
-            var move = gameLogic.createMove(state.board, row, col, turnIndex);
+            var move = gameLogic.createMove(state.board, dir, row, col, turnIndex);
             canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
         catch (e) {
-            log.info(["Cell is already full in position:", row, col]);
+            log.info(["Cell is already full in position:", dir, row, col]);
             return;
         }
     }
     game.cellClicked = cellClicked;
     function shouldShowImage(row, col) {
-        var cell = state.board[row][col];
+        var cell = state.board.color[row][col];
         return cell !== "";
     }
     game.shouldShowImage = shouldShowImage;
     function isPieceX(row, col) {
-        return state.board[row][col] === 'X';
+        return state.board.color[row][col] === 'YOU';
     }
     game.isPieceX = isPieceX;
     function isPieceO(row, col) {
-        return state.board[row][col] === 'O';
+        return state.board.color[row][col] === 'ME';
     }
     game.isPieceO = isPieceO;
     function shouldSlowlyAppear(row, col) {
@@ -104,9 +104,9 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
     .run(['initGameServices', function (initGameServices) {
         $rootScope['game'] = game;
         translate.setLanguage('en', {
-            RULES_OF_Dots_and_Boxes: "Rules of Dots_and_Boxes",
-            RULES_SLIDE1: "You and your opponent take turns to mark the grid in an empty spot. The first mark is X, then O, then X, then O, etc.",
-            RULES_SLIDE2: "The first to mark a whole row, column or diagonal wins.",
+            RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
+            RULES_SLIDE1: "You and your opponent take turns to mark one empty edge but cannot complete a cell.",
+            RULES_SLIDE2: "Whoever completes a cell earn one score. When all edges are filled, the player with higher score wins",
             CLOSE: "Close"
         });
         game.init();

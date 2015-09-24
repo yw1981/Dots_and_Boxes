@@ -106,7 +106,7 @@ module gameLogic {
       if (row !== 0) { //if not any cell on top line, check upper cell's sum
         boardAfterMove.sum[row-1][col] += 1;
         if (boardAfterMove.sum[row-1][col] === 4) {
-          switchTurn = false;
+          boardAfterMove.switchTurn = false;
           if (turnIndexBeforeMove === 0) {
             boardAfterMove.color[row-1][col] = 'YOU';
             boardAfterMove.score[0]++;
@@ -119,7 +119,7 @@ module gameLogic {
       }
       boardAfterMove.sum[row][col] += 1; // check lower cell's sum
       if (boardAfterMove.sum[row][col] === 4) {
-        switchTurn = false;
+        boardAfterMove.switchTurn = false;
         if (turnIndexBeforeMove === 0) {
           boardAfterMove.color[row][col] = 'YOU';
           boardAfterMove.score[0]++;
@@ -136,7 +136,7 @@ module gameLogic {
       if (col !== 0) {
         boardAfterMove.sum[row][col-1] += 1;
         if (boardAfterMove.sum[row][col-1] === 4) {
-          switchTurn = false;
+          boardAfterMove.switchTurn = false;
           if (turnIndexBeforeMove === 0) {
             boardAfterMove.color[row][col-1] = 'YOU';
             boardAfterMove.score[0]++;
@@ -149,7 +149,7 @@ module gameLogic {
       }
       boardAfterMove.sum[row][col] += 1;
       if (boardAfterMove.sum[row][col] === 4) {
-        switchTurn = false;
+        boardAfterMove.switchTurn = false;
         if (turnIndexBeforeMove === 0) {
           boardAfterMove.color[row][col] = 'YOU';
           boardAfterMove.score[0]++;
@@ -179,7 +179,7 @@ module gameLogic {
     if ((dir === 'hor' && board.hor[row][col] === 1) || (dir === 'ver' && board.ver[row][col] === 1)) {
       throw new Error("One can only make a move in an empty position!");
     }
-    if (getWinner(board) !== '') {
+    if (board.isGameOver) {
       throw new Error("Can only make a move if the game is not over!");
     }
     var boardAfterMove:Board = updateBoard(board, dir, row, col, turnIndexBeforeMove);
@@ -190,12 +190,12 @@ module gameLogic {
       firstOperation = {endMatch: {endMatchScores: boardAfterMove.score}};
     } else {
       // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
-      if (switchTurn) {
+      if (boardAfterMove.switchTurn) {
         firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
       }
-      else {
+      /*else {
         firstOperation = {setTurn: {turnIndex: turnIndexBeforeMove}}; // if switchTurn is false, do not change turnIndex
-      }
+      }*/
     }
     var delta: BoardDelta = {dir: dir, row: row, col: col};
     return [firstOperation,
@@ -219,7 +219,7 @@ module gameLogic {
       //  {set: {key: 'board', value: [['X', '', ''], ['', '', ''], ['', '', '']]}},
       //  {set: {key: 'delta', value: {row: 0, col: 0}}}]
       var deltaValue: BoardDelta = move[2].set.value; //see createMove's return signature
-      var dir = dletaValue.dir;
+      var dir = deltaValue.dir;
       var row = deltaValue.row;
       var col = deltaValue.col;
       var board = stateBeforeMove.board;
