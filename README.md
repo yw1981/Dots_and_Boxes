@@ -1,4 +1,4 @@
 Dots_and_Boxes
 =========
-Yuxin modified
-Dots_and_Boxes game
+Dots_and_Boxes game:
+https://en.wikipedia.org/wiki/Dots_and_Boxes

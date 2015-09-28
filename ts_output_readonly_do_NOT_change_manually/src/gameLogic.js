@@ -1,8 +1,19 @@
 var gameLogic;
 (function (gameLogic) {
-    var ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
-    var COLSIZE = 3;
+    gameLogic.ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+    gameLogic.COLSIZE = 3;
     /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing 24 edges and 9 empty cells */
+    function create2DArray(rowsize, colsize) {
+        var arr = [];
+        for (var i = 0; i < rowsize; i++) {
+            var temp = [];
+            for (var j = 0; j < colsize; j++) {
+                temp[j] = [];
+            }
+            arr[i] = temp;
+        }
+        return arr;
+    }
     function getInitialBoard() {
         var board = {};
         board.isGameOver = false;
@@ -10,18 +21,22 @@ var gameLogic;
         board.sumAllEdges = 0;
         board.score = [0, 0];
         board.chains = [];
-        for (var i = 0; i < ROWSIZE + 1; ++i) {
-            for (var j = 0; j < COLSIZE; ++j) {
+        board.hor = create2DArray(gameLogic.ROWSIZE + 1, gameLogic.COLSIZE);
+        for (var i = 0; i < gameLogic.ROWSIZE + 1; ++i) {
+            for (var j = 0; j < gameLogic.COLSIZE; ++j) {
                 board.hor[i][j] = 0;
             }
         }
-        for (var i = 0; i < ROWSIZE; ++i) {
-            for (var j = 0; j < COLSIZE + 1; ++j) {
+        board.ver = create2DArray(gameLogic.ROWSIZE, gameLogic.COLSIZE + 1);
+        for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+            for (var j = 0; j < gameLogic.COLSIZE + 1; ++j) {
                 board.ver[i][j] = 0;
             }
         }
-        for (var i = 0; i < ROWSIZE; ++i) {
-            for (var j = 0; j < COLSIZE; ++j) {
+        board.color = create2DArray(gameLogic.ROWSIZE, gameLogic.COLSIZE);
+        board.sum = create2DArray(gameLogic.ROWSIZE, gameLogic.COLSIZE);
+        for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+            for (var j = 0; j < gameLogic.COLSIZE; ++j) {
                 board.color[i][j] = '';
                 board.sum[i][j] = 0;
             }
@@ -29,68 +44,91 @@ var gameLogic;
         return board;
     }
     gameLogic.getInitialBoard = getInitialBoard;
-    /**
-     * Returns true if the game ended in a tie because there are no empty cells.
-     * Since this is a 3x3 board with two players, there will be no tie condition.
-     * E.g., isTie returns true for the following board:
-     *     [['X', 'O', 'X'],
-     *      ['X', 'O', 'O'],
-     *      ['O', 'X', 'X']]
-     */
-    /* function isTie(board: Board): boolean {
-      for (var i = 0; i < 3; i++) {
-        for (var j = 0; j < 3; j++) {
-          if (board[i][j] === '') {
-            // If there is an empty cell then we do not have a tie.
-            return false;
-          }
+    function printBoard(board) {
+        if (!board) {
+            console.log("board is undefined");
         }
-      }
-      // No empty cells, so we have a tie!
-      return true;
-    } */
-    /**
-     * Return the winner (either 'X' or 'O') or '' if there is no winner.
-     * The board is a matrix of size 3x3 containing either 'X', 'O', or ''.
-     * E.g., getWinner returns 'X' for the following board:
-     *     [['X', 'O', ''],
-     *      ['X', 'O', ''],
-     *      ['X', '', '']]
-     */
-    /*function getWinner(board: Board): string { //check the current winner after each createMove
-      if board.score[0]>board.score[1] {
-        return 'YOU';
-      }
-      else return 'ME';
-    }*?
-  
+        console.log('isGameOver=' + board.isGameOver, ' switchTurn=' + board.switchTurn, ' sumAllEdges=' + board.sumAllEdges, ' score=' + board.score);
+        if (board.hor) {
+            var output = '';
+            output = output + 'hor: [';
+            for (var i = 0; i < gameLogic.ROWSIZE + 1; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                    output = output + board.hor[i][j] + ', ';
+                }
+                output = output + ']';
+            }
+            output = output + ']';
+            console.log(output);
+        }
+        if (board.ver) {
+            var output = '';
+            output = output + 'ver: [';
+            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE + 1; ++j) {
+                    output = output + board.ver[i][j] + ', ';
+                }
+                output = output + ']';
+            }
+            output = output + ']';
+            console.log(output);
+        }
+        if (board.sum) {
+            var output = '';
+            output = output + 'sum: [';
+            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                    output = output + board.sum[i][j] + ', ';
+                }
+                output = output + ']';
+            }
+            output = output + ']';
+            console.log(output);
+        }
+        if (board.color) {
+            var output = '';
+            output = output + 'color: [';
+            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                    output = output + board.color[i][j] + ', ';
+                }
+                output = output + ']';
+            }
+            output = output + ']';
+            console.log(output);
+        }
+    }
+    gameLogic.printBoard = printBoard;
     /**
      * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
      * Returns an empty array if the game is over.
      */
-    function getPossibleMoves(board, turnIndexBeforeMove) {
-        var possibleMoves = [];
-        for (var i = 0; i < ROWSIZE + 1; i++) {
-            for (var j = 0; j < COLSIZE; j++) {
-                try {
-                    possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
-                }
-                catch (e) {
-                }
+    /*  export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
+        var possibleMoves: IMove[] = [];
+        for (var i = 0; i < ROWSIZE+1; i++) {
+          for (var j = 0; j < COLSIZE; j++) {
+            try {
+              possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
+            } catch (e) {
+              // The cell in that position was full.
             }
+          }
         }
         for (var i = 0; i < ROWSIZE; i++) {
-            for (var j = 0; j < COLSIZE + 1; j++) {
-                try {
-                    possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
-                }
-                catch (e) {
-                }
+          for (var j = 0; j < COLSIZE+1; j++) {
+            try {
+              possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
+            } catch (e) {
+              // The cell in that position was full.
             }
+          }
         }
         return possibleMoves;
-    }
-    gameLogic.getPossibleMoves = getPossibleMoves;
+      } */
     function updateBoard(board, dir, row, col, turnIndexBeforeMove) {
         var boardAfterMove = angular.copy(board);
         if (dir === 'hor') {
@@ -109,16 +147,18 @@ var gameLogic;
                     }
                 }
             }
-            boardAfterMove.sum[row][col] += 1; // check lower cell's sum
-            if (boardAfterMove.sum[row][col] === 4) {
-                boardAfterMove.switchTurn = false;
-                if (turnIndexBeforeMove === 0) {
-                    boardAfterMove.color[row][col] = 'YOU';
-                    boardAfterMove.score[0]++;
-                }
-                else {
-                    boardAfterMove.color[row][col] = 'ME';
-                    boardAfterMove.score[1]++;
+            else if (row !== gameLogic.ROWSIZE) {
+                boardAfterMove.sum[row][col] += 1; // check lower cell's sum
+                if (boardAfterMove.sum[row][col] === 4) {
+                    boardAfterMove.switchTurn = false;
+                    if (turnIndexBeforeMove === 0) {
+                        boardAfterMove.color[row][col] = 'YOU';
+                        boardAfterMove.score[0]++;
+                    }
+                    else {
+                        boardAfterMove.color[row][col] = 'ME';
+                        boardAfterMove.score[1]++;
+                    }
                 }
             }
         }
@@ -138,16 +178,18 @@ var gameLogic;
                     }
                 }
             }
-            boardAfterMove.sum[row][col] += 1;
-            if (boardAfterMove.sum[row][col] === 4) {
-                boardAfterMove.switchTurn = false;
-                if (turnIndexBeforeMove === 0) {
-                    boardAfterMove.color[row][col] = 'YOU';
-                    boardAfterMove.score[0]++;
-                }
-                else {
-                    boardAfterMove.color[row][col] = 'ME';
-                    boardAfterMove.score[1]++;
+            else if (col !== gameLogic.COLSIZE) {
+                boardAfterMove.sum[row][col] += 1;
+                if (boardAfterMove.sum[row][col] === 4) {
+                    boardAfterMove.switchTurn = false;
+                    if (turnIndexBeforeMove === 0) {
+                        boardAfterMove.color[row][col] = 'YOU';
+                        boardAfterMove.score[0]++;
+                    }
+                    else {
+                        boardAfterMove.color[row][col] = 'ME';
+                        boardAfterMove.score[1]++;
+                    }
                 }
             }
         }
@@ -157,6 +199,7 @@ var gameLogic;
         }
         return boardAfterMove;
     }
+    gameLogic.updateBoard = updateBoard;
     /**
      * Returns the move that should be performed when player
      * with index turnIndexBeforeMove makes a move in cell row X col.
@@ -184,6 +227,9 @@ var gameLogic;
             // Game continues. Now it's the opponent's turn (the turn switches from 0 to 1 and 1 to 0).
             if (boardAfterMove.switchTurn) {
                 firstOperation = { setTurn: { turnIndex: 1 - turnIndexBeforeMove } };
+            }
+            else {
+                firstOperation = { setTurn: { turnIndex: turnIndexBeforeMove } }; // if switchTurn is false, do not change turnIndex
             }
         }
         var delta = { dir: dir, row: row, col: col };

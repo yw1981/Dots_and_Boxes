@@ -20,10 +20,21 @@ interface IState {
 }
 
 module gameLogic {
-
-  const ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
-  const COLSIZE = 3;
+  export const ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+  export const COLSIZE = 3;
   /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing 24 edges and 9 empty cells */
+  function create2DArray(rowsize: number, colsize: number) {
+    var arr: any[] = [];
+    for (var i=0; i<rowsize; i++) {
+      var temp:any[] = [];
+      for (var j=0; j<colsize; j++) {
+        temp[j] = [];
+      }
+      arr[i] = temp;
+    }
+    return arr;
+  }
+
   export function getInitialBoard(): Board {
     var board = <Board>{};
     board.isGameOver = false;
@@ -31,16 +42,20 @@ module gameLogic {
     board.sumAllEdges = 0;
     board.score = [0, 0];
     board.chains = [];
+    board.hor = create2DArray(ROWSIZE+1, COLSIZE);
     for (var i = 0; i < ROWSIZE+1; ++i) {
       for (var j = 0; j < COLSIZE; ++j) {
         board.hor[i][j] = 0;
       }
     }
+    board.ver = create2DArray(ROWSIZE, COLSIZE+1);
     for (var i = 0; i < ROWSIZE; ++i) {
       for (var j = 0; j < COLSIZE+1; ++j) {
         board.ver[i][j] = 0;
       }
     }
+    board.color = create2DArray(ROWSIZE, COLSIZE);
+    board.sum = create2DArray(ROWSIZE, COLSIZE);
     for (var i = 0; i < ROWSIZE; ++i) {
       for (var j = 0; j < COLSIZE; ++j) {
         board.color[i][j] = '';
@@ -50,48 +65,70 @@ module gameLogic {
     return board;
   }
 
-  /**
-   * Returns true if the game ended in a tie because there are no empty cells.
-   * Since this is a 3x3 board with two players, there will be no tie condition.
-   * E.g., isTie returns true for the following board:
-   *     [['X', 'O', 'X'],
-   *      ['X', 'O', 'O'],
-   *      ['O', 'X', 'X']]
-   */
-  /* function isTie(board: Board): boolean {
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
-        if (board[i][j] === '') {
-          // If there is an empty cell then we do not have a tie.
-          return false;
+  export function printBoard(board:Board):void {
+    if ( !board ) {
+      console.log("board is undefined");
+    }
+    console.log('isGameOver='+board.isGameOver,' switchTurn='+board.switchTurn, ' sumAllEdges='+board.sumAllEdges, ' score='+board.score);
+    if (board.hor){
+      var output:string = '';
+      output = output+'hor: [';
+      for (var i = 0; i < ROWSIZE+1; ++i) {
+        output = output + '[';
+        for (var j = 0; j < COLSIZE; ++j) {
+          output = output+board.hor[i][j] + ', ';
         }
+        output = output + ']';
       }
+      output = output + ']';
+      console.log(output);
     }
-    // No empty cells, so we have a tie!
-    return true;
-  } */
-
-  /**
-   * Return the winner (either 'X' or 'O') or '' if there is no winner.
-   * The board is a matrix of size 3x3 containing either 'X', 'O', or ''.
-   * E.g., getWinner returns 'X' for the following board:
-   *     [['X', 'O', ''],
-   *      ['X', 'O', ''],
-   *      ['X', '', '']]
-   */
-
-  /*function getWinner(board: Board): string { //check the current winner after each createMove
-    if board.score[0]>board.score[1] {
-      return 'YOU';
+    if (board.ver){
+      var output:string = '';
+      output = output+'ver: [';
+      for (var i = 0; i < ROWSIZE; ++i) {
+        output = output + '[';
+        for (var j = 0; j < COLSIZE+1; ++j) {
+          output = output+board.ver[i][j] + ', ';
+        }
+        output = output + ']';
+      }
+      output = output + ']';
+      console.log(output);
     }
-    else return 'ME';
-  }*?
+    if (board.sum){
+      var output:string = '';
+      output = output+'sum: [';
+      for (var i = 0; i < ROWSIZE; ++i) {
+        output = output + '[';
+        for (var j = 0; j < COLSIZE; ++j) {
+          output = output+board.sum[i][j] + ', ';
+        }
+        output = output + ']';
+      }
+      output = output + ']';
+      console.log(output);
+    }
+    if (board.color){
+      var output:string = '';
+      output = output+'color: [';
+      for (var i = 0; i < ROWSIZE; ++i) {
+        output = output + '[';
+        for (var j = 0; j < COLSIZE; ++j) {
+          output = output+board.color[i][j] + ', ';
+        }
+        output = output + ']';
+      }
+      output = output + ']';
+      console.log(output);
+    }
+}
 
   /**
    * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
    * Returns an empty array if the game is over.
    */
-  export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
+/*  export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
     var possibleMoves: IMove[] = [];
     for (var i = 0; i < ROWSIZE+1; i++) {
       for (var j = 0; j < COLSIZE; j++) {
@@ -112,9 +149,9 @@ module gameLogic {
       }
     }
     return possibleMoves;
-  }
+  } */
 
-  function updateBoard(board: Board, dir: string, row: number, col: number, turnIndexBeforeMove: number):Board {
+  export function updateBoard(board: Board, dir: string, row: number, col: number, turnIndexBeforeMove: number):Board {
     var boardAfterMove = angular.copy(board);
     if (dir === 'hor') {
       boardAfterMove.hor[row][col] = 1;
@@ -132,16 +169,18 @@ module gameLogic {
           }
         }
       }
-      boardAfterMove.sum[row][col] += 1; // check lower cell's sum
-      if (boardAfterMove.sum[row][col] === 4) {
-        boardAfterMove.switchTurn = false;
-        if (turnIndexBeforeMove === 0) {
-          boardAfterMove.color[row][col] = 'YOU';
-          boardAfterMove.score[0]++;
-        }
-        else {
-          boardAfterMove.color[row][col] = 'ME';
-          boardAfterMove.score[1]++;
+      else if (row !== ROWSIZE) {
+        boardAfterMove.sum[row][col] += 1; // check lower cell's sum
+        if (boardAfterMove.sum[row][col] === 4) {
+          boardAfterMove.switchTurn = false;
+          if (turnIndexBeforeMove === 0) {
+            boardAfterMove.color[row][col] = 'YOU';
+            boardAfterMove.score[0]++;
+          }
+          else {
+            boardAfterMove.color[row][col] = 'ME';
+            boardAfterMove.score[1]++;
+          }
         }
       }
     }
@@ -162,19 +201,22 @@ module gameLogic {
           }
         }
       }
-      boardAfterMove.sum[row][col] += 1;
-      if (boardAfterMove.sum[row][col] === 4) {
-        boardAfterMove.switchTurn = false;
-        if (turnIndexBeforeMove === 0) {
-          boardAfterMove.color[row][col] = 'YOU';
-          boardAfterMove.score[0]++;
-        }
-        else {
-          boardAfterMove.color[row][col] = 'ME';
-          boardAfterMove.score[1]++;
+      else if (col !== COLSIZE) {
+        boardAfterMove.sum[row][col] += 1;
+        if (boardAfterMove.sum[row][col] === 4) {
+          boardAfterMove.switchTurn = false;
+          if (turnIndexBeforeMove === 0) {
+            boardAfterMove.color[row][col] = 'YOU';
+            boardAfterMove.score[0]++;
+          }
+          else {
+            boardAfterMove.color[row][col] = 'ME';
+            boardAfterMove.score[1]++;
+          }
         }
       }
     }
+
     boardAfterMove.sumAllEdges++;
     if (boardAfterMove.sumAllEdges === 24) {
       boardAfterMove.isGameOver = true;
@@ -208,9 +250,9 @@ module gameLogic {
       if (boardAfterMove.switchTurn) {
         firstOperation = {setTurn: {turnIndex: 1 - turnIndexBeforeMove}};
       }
-      /*else {
+      else {
         firstOperation = {setTurn: {turnIndex: turnIndexBeforeMove}}; // if switchTurn is false, do not change turnIndex
-      }*/
+      }
     }
     var delta: BoardDelta = {dir: dir, row: row, col: col};
     return [firstOperation,
