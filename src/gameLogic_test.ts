@@ -1,6 +1,5 @@
 describe("In Dots_and_Boxes", function() {
 
-  //import updateBoard from 'gameLogic';
   function expectMove(
       turnIndexBeforeMove: number, stateBeforeMove: IState, move: IMove, isOk: boolean): void {
     expect(gameLogic.isMoveOk({
@@ -204,35 +203,7 @@ describe("In Dots_and_Boxes", function() {
         {set: {key: 'delta', value: {dir: 'ver', row: 1, col: 2}}}]);
   });
 
-    /*for (var i = 0; i < gameLogic.ROWSIZE+1; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-        boardBeforeLastMove.hor[i][j] = 1;
-      }
-    }
-    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE+1; ++j) {
-        boardBeforeLastMove.ver[i][j] = 1;
-      }
-    }
-    boardBeforeLastMove.hor[3][1] = 0;
-    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-        boardBeforeLastMove.color[i][j] = 'ME';
-        boardBeforeLastMove.sum[i][j] = 4;
-      }
-    }
-    boardBeforeLastMove.sum[2][2] = 3;
-    boardBeforeLastMove.color[2][0] = 'YOU';
-    boardBeforeLastMove.color[2][2] = 'YOU';
-
-    var boardAfterLastMove = gameLogic.updateBoard(boardBeforeMove, 'hor', 3, 0, 0);
-    expectIllegalMove(0,
-      {board: boardBeforeMove, delta: {dir: 'ver', row: 0, col: 3}},
-      [{setTurn: {turnIndex : 1}},
-        {set: {key: 'board', value: boardAfterMove}},
-        {set: {key: 'delta', value: {dir: 'hor', row: 3, col: 0}}}]);
-  });*/
-
+// did not test tie condition here in 3x3 board since tie will only happen when ROWSIZExCOLSIZE = even, may add it later when change board size
 
   it("ME wins by filling edge in hor:3x2 is legal", function() {
     var board = gameLogic.getInitialBoard();
@@ -253,69 +224,28 @@ describe("In Dots_and_Boxes", function() {
   });
 
   it("YOU wins by filling edge in ver:2x2 is legal", function() {
-    var board = gameLogic.getInitialBoard();
-    var boardBeforeLastMove = angular.copy(board);
-    //boardBeforeLastMove.isGameOver = false;
-    boardBeforeLastMove.switchTurn = true;
-    boardBeforeLastMove.sumAllEdges = 23;
-    boardBeforeLastMove.score = [6, 2];
-    boardBeforeLastMove.hor = [[1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]];
-    boardBeforeLastMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 0, 1]];
-    boardBeforeLastMove.color = [['YOU', 'YOU', 'YOU'], ['YOU', 'YOU', 'YOU'], ['ME', '', 'ME']];
-    boardBeforeLastMove.sum = [[4, 4, 4], [4, 4, 4], [4, 3, 4]];
-    gameLogic.printBoard(boardBeforeLastMove);
-    var boardAfterLastMove = gameLogic.updateBoard(boardBeforeLastMove, 'ver', 2, 2, 1);
-    gameLogic.printBoard(boardBeforeLastMove);
-    gameLogic.printBoard(boardAfterLastMove);
-    expectMoveOk(1, { board: boardBeforeLastMove, delta: { dir: 'ver', row: 0, col: 3 } },
-      [ { endMatch: {endMatchScores: boardAfterLastMove.score}},
-        { set: { key: 'board', value: boardAfterLastMove } },
-        { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 2 } } }]);
-  });
+     var board = gameLogic.getInitialBoard();
+     var boardBeforeLastMove = angular.copy(board);
+     //boardBeforeLastMove.isGameOver = false;
+     boardBeforeLastMove.switchTurn = true;
+     boardBeforeLastMove.sumAllEdges = 23;
+     boardBeforeLastMove.score = [6, 2];
+     boardBeforeLastMove.hor = [[1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]];
+     boardBeforeLastMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 0, 1]];
+     boardBeforeLastMove.color = [['YOU', 'YOU', 'YOU'], ['YOU', 'YOU', 'YOU'], ['ME', '', 'ME']];
+     boardBeforeLastMove.sum = [[4, 4, 4], [4, 4, 4], [4, 3, 4]];
+     gameLogic.printBoard(boardBeforeLastMove);
+     var boardAfterLastMove = gameLogic.updateBoard(boardBeforeLastMove, 'ver', 2, 2, 1);
+     gameLogic.printBoard(boardBeforeLastMove);
+     gameLogic.printBoard(boardAfterLastMove);
+     expectMoveOk(1, { board: boardBeforeLastMove, delta: { dir: 'ver', row: 0, col: 3 } },
+       [ { endMatch: {endMatchScores: boardAfterLastMove.score}},
+         { set: { key: 'board', value: boardAfterLastMove } },
+         { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 2 } } }]);
+   });
 
-  /*it("X wins by placing X in 2x0 is legal", function() {
-    expectMoveOk(0,
-      {board:
-        [['X', 'O', ''],
-         ['X', 'O', ''],
-         ['', '', '']], delta: {row: 1, col: 1}},
-      [{endMatch: {endMatchScores: [1, 0]}},
-            {set: {key: 'board', value:
-              [['X', 'O', ''],
-               ['X', 'O', ''],
-               ['X', '', '']]}},
-            {set: {key: 'delta', value: {row: 2, col: 0}}}]);
-  });
 
-  it("O wins by placing O in 1x1 is legal", function() {
-    expectMoveOk(1,
-      {board:
-        [['X', 'X', 'O'],
-         ['X', '', ''],
-         ['O', '', '']], delta: {row: 0, col: 1}},
-      [{endMatch: {endMatchScores: [0, 1]}},
-            {set: {key: 'board', value:
-              [['X', 'X', 'O'],
-               ['X', 'O', ''],
-               ['O', '', '']]}},
-            {set: {key: 'delta', value: {row: 1, col: 1}}}]);
-  });
-
-  it("the game ties when two players' scores are equal, can only happen when ROWSIZExCOLSIZE iseven.", function() {
-    expectMoveOk(0,
-      {board:
-        [['X', 'O', 'X'],
-         ['X', 'O', 'O'],
-         ['O', 'X', '']], delta: {row: 2, col: 0}},
-      [{endMatch: {endMatchScores: [0, 0]}},
-            {set: {key: 'board', value:
-              [['X', 'O', 'X'],
-               ['X', 'O', 'O'],
-               ['O', 'X', 'X']]}},
-            {set: {key: 'delta', value: {row: 2, col: 2}}}]);
-  }); */
-
-  it("cannot move after when isGameOver=true, no matter what the board looks like", function() { //what will happen if illegal case contains illegal moves
+  it("cannot move when isGameOver=true, no matter what the board looks like", function() { //what will happen if illegal case contains illegal moves
     var board = gameLogic.getInitialBoard();
     board.isGameOver = true;
     expectIllegalMove(0, { board: board, delta: {dir: 'hor', row: 3, col: 2} },
@@ -324,7 +254,7 @@ describe("In Dots_and_Boxes", function() {
         {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 3}}}]);
   });
 
-  it("cannot move after when sumAllEdges=24, no matter what the board looks like", function() { //what will happen if illegal case contains illegal moves
+  it("cannot move when sumAllEdges=24, no matter what the board looks like", function() { //what will happen if illegal case contains illegal moves
     var board = gameLogic.getInitialBoard();
     board.sumAllEdges = 24;
     expectIllegalMove(0, { board: board, delta: {dir: 'hor', row: 3, col: 2} },

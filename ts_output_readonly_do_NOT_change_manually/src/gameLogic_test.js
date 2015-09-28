@@ -1,5 +1,4 @@
 describe("In Dots_and_Boxes", function () {
-    //import updateBoard from 'gameLogic';
     function expectMove(turnIndexBeforeMove, stateBeforeMove, move, isOk) {
         expect(gameLogic.isMoveOk({
             turnIndexBeforeMove: turnIndexBeforeMove,
@@ -167,34 +166,7 @@ describe("In Dots_and_Boxes", function () {
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'ver', row: 1, col: 2 } } }]);
     });
-    /*for (var i = 0; i < gameLogic.ROWSIZE+1; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-        boardBeforeLastMove.hor[i][j] = 1;
-      }
-    }
-    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE+1; ++j) {
-        boardBeforeLastMove.ver[i][j] = 1;
-      }
-    }
-    boardBeforeLastMove.hor[3][1] = 0;
-    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-        boardBeforeLastMove.color[i][j] = 'ME';
-        boardBeforeLastMove.sum[i][j] = 4;
-      }
-    }
-    boardBeforeLastMove.sum[2][2] = 3;
-    boardBeforeLastMove.color[2][0] = 'YOU';
-    boardBeforeLastMove.color[2][2] = 'YOU';
-
-    var boardAfterLastMove = gameLogic.updateBoard(boardBeforeMove, 'hor', 3, 0, 0);
-    expectIllegalMove(0,
-      {board: boardBeforeMove, delta: {dir: 'ver', row: 0, col: 3}},
-      [{setTurn: {turnIndex : 1}},
-        {set: {key: 'board', value: boardAfterMove}},
-        {set: {key: 'delta', value: {dir: 'hor', row: 3, col: 0}}}]);
-  });*/
+    // did not test tie condition here in 3x3 board since tie will only happen when ROWSIZExCOLSIZE = even, may add it later when change board size
     it("ME wins by filling edge in hor:3x2 is legal", function () {
         var board = gameLogic.getInitialBoard();
         var boardBeforeLastMove = angular.copy(board);
@@ -230,55 +202,14 @@ describe("In Dots_and_Boxes", function () {
             { set: { key: 'board', value: boardAfterLastMove } },
             { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 2 } } }]);
     });
-    /*it("X wins by placing X in 2x0 is legal", function() {
-      expectMoveOk(0,
-        {board:
-          [['X', 'O', ''],
-           ['X', 'O', ''],
-           ['', '', '']], delta: {row: 1, col: 1}},
-        [{endMatch: {endMatchScores: [1, 0]}},
-              {set: {key: 'board', value:
-                [['X', 'O', ''],
-                 ['X', 'O', ''],
-                 ['X', '', '']]}},
-              {set: {key: 'delta', value: {row: 2, col: 0}}}]);
-    });
-  
-    it("O wins by placing O in 1x1 is legal", function() {
-      expectMoveOk(1,
-        {board:
-          [['X', 'X', 'O'],
-           ['X', '', ''],
-           ['O', '', '']], delta: {row: 0, col: 1}},
-        [{endMatch: {endMatchScores: [0, 1]}},
-              {set: {key: 'board', value:
-                [['X', 'X', 'O'],
-                 ['X', 'O', ''],
-                 ['O', '', '']]}},
-              {set: {key: 'delta', value: {row: 1, col: 1}}}]);
-    });
-  
-    it("the game ties when two players' scores are equal, can only happen when ROWSIZExCOLSIZE iseven.", function() {
-      expectMoveOk(0,
-        {board:
-          [['X', 'O', 'X'],
-           ['X', 'O', 'O'],
-           ['O', 'X', '']], delta: {row: 2, col: 0}},
-        [{endMatch: {endMatchScores: [0, 0]}},
-              {set: {key: 'board', value:
-                [['X', 'O', 'X'],
-                 ['X', 'O', 'O'],
-                 ['O', 'X', 'X']]}},
-              {set: {key: 'delta', value: {row: 2, col: 2}}}]);
-    }); */
-    it("cannot move after when isGameOver=true, no matter what the board looks like", function () {
+    it("cannot move when isGameOver=true, no matter what the board looks like", function () {
         var board = gameLogic.getInitialBoard();
         board.isGameOver = true;
         expectIllegalMove(0, { board: board, delta: { dir: 'hor', row: 3, col: 2 } }, [{ setTurn: { turnIndex: 1 } },
             { set: { key: 'board', value: board } },
             { set: { key: 'delta', value: { dir: 'ver', row: 0, col: 3 } } }]);
     });
-    it("cannot move after when sumAllEdges=24, no matter what the board looks like", function () {
+    it("cannot move when sumAllEdges=24, no matter what the board looks like", function () {
         var board = gameLogic.getInitialBoard();
         board.sumAllEdges = 24;
         expectIllegalMove(0, { board: board, delta: { dir: 'hor', row: 3, col: 2 } }, [{ setTurn: { turnIndex: 1 } },
