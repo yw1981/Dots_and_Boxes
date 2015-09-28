@@ -207,25 +207,23 @@ describe("In Dots_and_Boxes", function() {
       {set: {key: 'delta', value: {dir: 'ver', row: 4, col: 3}}}]);
   });
 
-/*  it("placing X in 0x0 but setTurn to yourself is illegal", function() {
+  it("YOU filling edge in hor:0x0 but setTurn to yourself is illegal", function() {
+    var board = gameLogic.getInitialBoard();
     expectIllegalMove(0, {}, [{setTurn: {turnIndex : 0}},
-      {set: {key: 'board', value:
-        [['X', '', ''],
-         ['', '', ''],
-         ['', '', '']]}},
-      {set: {key: 'delta', value: {row: 0, col: 0}}}]);
+      {set: {key: 'board', value: board}},
+      {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 0}}}]);
   });
 
-  it("placing X in 0x0 but setting the board wrong is illegal", function() {
+  it("YOU filling edge in hor:0x0 but setting the board wrong is illegal", function() {
+    var board = gameLogic.getInitialBoard();
+    var board_wrong = angular.copy(board);
+    board_wrong.hor[0][1] = 1;
     expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
-      {set: {key: 'board', value:
-        [['X', 'X', ''],
-         ['', '', ''],
-         ['', '', '']]}},
-      {set: {key: 'delta', value: {row: 0, col: 0}}}]);
+      {set: {key: 'board', value: board_wrong}},
+      {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 0}}}]);
   });
 
-  it("getPossibleMoves returns exactly one cell", function() {
+/*  it("getPossibleMoves returns exactly one cell", function() {
     var board =
         [['O', 'O', 'X'],
          ['X', 'X', 'O'],
