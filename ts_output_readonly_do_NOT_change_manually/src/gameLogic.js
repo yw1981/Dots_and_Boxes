@@ -178,7 +178,7 @@ var gameLogic;
                     }
                 }
             }
-            else if (col !== gameLogic.COLSIZE) {
+            if (col !== gameLogic.COLSIZE) {
                 boardAfterMove.sum[row][col] += 1;
                 if (boardAfterMove.sum[row][col] === 4) {
                     boardAfterMove.switchTurn = false;

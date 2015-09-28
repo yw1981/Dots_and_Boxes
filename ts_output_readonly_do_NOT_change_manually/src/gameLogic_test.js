@@ -103,7 +103,7 @@ describe("In Dots_and_Boxes", function () {
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'hor', row: 3, col: 0 } } }]);
     });
-    it("YOU filling edge in ver:2x3 is legal", function () {
+    it("YOU filling edge in ver:2x3 and get one cell is legal", function () {
         var board = gameLogic.getInitialBoard();
         var boardBeforeMove = angular.copy(board);
         boardBeforeMove.isGameOver = false;
@@ -114,13 +114,58 @@ describe("In Dots_and_Boxes", function () {
         boardBeforeMove.ver = [[0, 0, 1, 0], [1, 0, 1, 0], [1, 1, 1, 0]];
         boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
         boardBeforeMove.sum = [[2, 2, 2], [2, 2, 2], [2, 2, 3]];
-        //gameLogic.printBoard(boardBeforeMove);
         var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'ver', 2, 3, 0);
-        //gameLogic.printBoard(boardBeforeMove);
-        //gameLogic.printBoard(boardAfterMove);
         expectMoveOk(0, { board: boardBeforeMove, delta: { dir: 'hor', row: 1, col: 0 } }, [{ setTurn: { turnIndex: 0 } },
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 3 } } }]);
+    });
+    it("ME filling edge in ver:2x3 and getting one cell is legal", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeMove = angular.copy(board);
+        boardBeforeMove.isGameOver = false;
+        boardBeforeMove.switchTurn = true;
+        boardBeforeMove.sumAllEdges = 12;
+        boardBeforeMove.score = [0, 0];
+        boardBeforeMove.hor = [[1, 0, 1], [1, 1, 0], [0, 0, 1], [0, 0, 1]];
+        boardBeforeMove.ver = [[0, 0, 1, 0], [1, 0, 1, 0], [1, 1, 1, 0]];
+        boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+        boardBeforeMove.sum = [[2, 2, 2], [2, 2, 2], [2, 2, 3]];
+        var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'ver', 2, 3, 1);
+        expectMoveOk(1, { board: boardBeforeMove, delta: { dir: 'hor', row: 1, col: 0 } }, [{ setTurn: { turnIndex: 1 } },
+            { set: { key: 'board', value: boardAfterMove } },
+            { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 3 } } }]);
+    });
+    it("ME filling edge in ver:1x2 and getting two cells is legal", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeMove = angular.copy(board);
+        boardBeforeMove.isGameOver = false;
+        boardBeforeMove.switchTurn = true;
+        boardBeforeMove.sumAllEdges = 13;
+        boardBeforeMove.score = [0, 0];
+        boardBeforeMove.hor = [[1, 0, 1], [1, 1, 1], [0, 1, 1], [0, 0, 0]];
+        boardBeforeMove.ver = [[0, 0, 1, 0], [1, 1, 0, 1], [1, 0, 1, 0]];
+        boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+        boardBeforeMove.sum = [[2, 2, 3], [3, 3, 3], [1, 2, 2]];
+        var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'ver', 1, 2, 1);
+        expectMoveOk(1, { board: boardBeforeMove, delta: { dir: 'hor', row: 1, col: 0 } }, [{ setTurn: { turnIndex: 1 } },
+            { set: { key: 'board', value: boardAfterMove } },
+            { set: { key: 'delta', value: { dir: 'ver', row: 1, col: 2 } } }]);
+    });
+    it("YOU filling edge in ver:1x2 and getting two cells is legal", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeMove = angular.copy(board);
+        boardBeforeMove.isGameOver = false;
+        boardBeforeMove.switchTurn = true;
+        boardBeforeMove.sumAllEdges = 13;
+        boardBeforeMove.score = [0, 0];
+        boardBeforeMove.hor = [[1, 0, 1], [1, 1, 1], [0, 1, 1], [0, 0, 0]];
+        boardBeforeMove.ver = [[0, 0, 1, 0], [1, 1, 0, 1], [1, 0, 1, 0]];
+        boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+        boardBeforeMove.sum = [[2, 2, 3], [3, 3, 3], [1, 2, 2]];
+        var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'ver', 1, 2, 0);
+        expectMoveOk(0, { board: boardBeforeMove, delta: { dir: 'hor', row: 1, col: 0 } }, [{ setTurn: { turnIndex: 0 } },
+            { set: { key: 'board', value: boardAfterMove } },
+            { set: { key: 'delta', value: { dir: 'ver', row: 1, col: 2 } } }]);
     });
     /*for (var i = 0; i < gameLogic.ROWSIZE+1; ++i) {
       for (var j = 0; j < gameLogic.COLSIZE; ++j) {
@@ -150,7 +195,7 @@ describe("In Dots_and_Boxes", function () {
         {set: {key: 'board', value: boardAfterMove}},
         {set: {key: 'delta', value: {dir: 'hor', row: 3, col: 0}}}]);
   });*/
-    it("YOU wins by filling edge in hor:3x2 is legal", function () {
+    it("ME wins by filling edge in hor:3x2 is legal", function () {
         var board = gameLogic.getInitialBoard();
         var boardBeforeLastMove = angular.copy(board);
         //boardBeforeLastMove.isGameOver = false;
@@ -161,13 +206,29 @@ describe("In Dots_and_Boxes", function () {
         boardBeforeLastMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]];
         boardBeforeLastMove.color = [['ME', 'ME', 'ME'], ['ME', 'ME', 'ME'], ['YOU', 'YOU', '']];
         boardBeforeLastMove.sum = [[4, 4, 4], [4, 4, 4], [4, 4, 3]];
-        //gameLogic.printBoard(boardBeforeLastMove);
         var boardAfterLastMove = gameLogic.updateBoard(boardBeforeLastMove, 'hor', 3, 2, 0);
-        //gameLogic.printBoard(boardBeforeLastMove);
-        //gameLogic.printBoard(boardAfterLastMove);
         expectMoveOk(0, { board: boardBeforeLastMove, delta: { dir: 'ver', row: 0, col: 3 } }, [{ endMatch: { endMatchScores: boardAfterLastMove.score } },
             { set: { key: 'board', value: boardAfterLastMove } },
             { set: { key: 'delta', value: { dir: 'hor', row: 3, col: 2 } } }]);
+    });
+    it("YOU wins by filling edge in ver:2x2 is legal", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeLastMove = angular.copy(board);
+        //boardBeforeLastMove.isGameOver = false;
+        boardBeforeLastMove.switchTurn = true;
+        boardBeforeLastMove.sumAllEdges = 23;
+        boardBeforeLastMove.score = [6, 2];
+        boardBeforeLastMove.hor = [[1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1]];
+        boardBeforeLastMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 0, 1]];
+        boardBeforeLastMove.color = [['YOU', 'YOU', 'YOU'], ['YOU', 'YOU', 'YOU'], ['ME', '', 'ME']];
+        boardBeforeLastMove.sum = [[4, 4, 4], [4, 4, 4], [4, 3, 4]];
+        gameLogic.printBoard(boardBeforeLastMove);
+        var boardAfterLastMove = gameLogic.updateBoard(boardBeforeLastMove, 'ver', 2, 2, 1);
+        gameLogic.printBoard(boardBeforeLastMove);
+        gameLogic.printBoard(boardAfterLastMove);
+        expectMoveOk(1, { board: boardBeforeLastMove, delta: { dir: 'ver', row: 0, col: 3 } }, [{ endMatch: { endMatchScores: boardAfterLastMove.score } },
+            { set: { key: 'board', value: boardAfterLastMove } },
+            { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 2 } } }]);
     });
     /*it("X wins by placing X in 2x0 is legal", function() {
       expectMoveOk(0,
@@ -197,7 +258,7 @@ describe("In Dots_and_Boxes", function () {
               {set: {key: 'delta', value: {row: 1, col: 1}}}]);
     });
   
-    it("the game ties when there are no more empty cells", function() {
+    it("the game ties when two players' scores are equal, can only happen when ROWSIZExCOLSIZE iseven.", function() {
       expectMoveOk(0,
         {board:
           [['X', 'O', 'X'],

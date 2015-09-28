@@ -201,7 +201,7 @@ module gameLogic {
           }
         }
       }
-      else if (col !== COLSIZE) {
+     if (col !== COLSIZE) {
         boardAfterMove.sum[row][col] += 1;
         if (boardAfterMove.sum[row][col] === 4) {
           boardAfterMove.switchTurn = false;
