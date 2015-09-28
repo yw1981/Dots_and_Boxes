@@ -179,14 +179,35 @@ describe("In Dots_and_Boxes", function() {
       {set: {key: 'board', value: board}}]);
   });
 
-/*  it("YOU filling edge outside the board (in hor:4x0) is illegal", function() {
+  it("YOU filling edge outside the board (in hor:4x0) is illegal", function() {
     var board = gameLogic.getInitialBoard();
     expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
       {set: {key: 'board', value: board}},
-      {set: {key: 'delta', value: {row: 3, col: 0}}}]);
+      {set: {key: 'delta', value: {row: 4, col: 0}}}]);
   });
 
-  it("placing X in 0x0 but setTurn to yourself is illegal", function() {
+  it("YOU filling edge outside the board (in ver:4x1) is illegal", function() {
+    var board = gameLogic.getInitialBoard();
+    expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
+      {set: {key: 'board', value: board}},
+      {set: {key: 'delta', value: {dir: 'ver', row: 4, col: 1}}}]);
+  });
+
+  it("ME filling edge outside the board (in hor:4x2) is illegal", function() {
+    var board = gameLogic.getInitialBoard();
+    expectIllegalMove(1, {}, [{setTurn: {turnIndex : 0}},
+      {set: {key: 'board', value: board}},
+      {set: {key: 'delta', value: {dir: 'hor', row: 4, col: 2}}}]);
+  });
+
+  it("ME filling edge outside the board (in ver:4x3) is illegal", function() {
+    var board = gameLogic.getInitialBoard();
+    expectIllegalMove(1, {}, [{setTurn: {turnIndex : 0}},
+      {set: {key: 'board', value: board}},
+      {set: {key: 'delta', value: {dir: 'ver', row: 4, col: 3}}}]);
+  });
+
+/*  it("placing X in 0x0 but setTurn to yourself is illegal", function() {
     expectIllegalMove(0, {}, [{setTurn: {turnIndex : 0}},
       {set: {key: 'board', value:
         [['X', '', ''],
