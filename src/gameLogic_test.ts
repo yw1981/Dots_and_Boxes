@@ -20,7 +20,7 @@ describe("In Dots_and_Boxes", function() {
     expectMove(turnIndexBeforeMove, stateBeforeMove, move, false);
   }
 
-  it("Case1: YOU filling edge in hor:0x0 position from initial state is legal", function() {
+  it("YOU filling edge in hor:0x0 position from initial state is legal", function() {
     var board = gameLogic.getInitialBoard();
     var boardAfterMove = gameLogic.updateBoard(board, 'hor', 0, 0, 0);
     expectMoveOk(0, <IState>{},
@@ -29,7 +29,7 @@ describe("In Dots_and_Boxes", function() {
         {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 0}}}]);
   });
 
-  it("Case2: ME filling edge in ver:2x3 position after YOU filling edge hor:0x0 is legal", function() {
+  it("ME filling edge in ver:2x3 position after YOU filling edge hor:0x0 is legal", function() {
     var board = gameLogic.getInitialBoard();
     var boardAfterMove0 = gameLogic.updateBoard(board, 'hor', 0, 0, 0);
     var boardAfterMove1 = gameLogic.updateBoard(boardAfterMove0, 'ver', 2, 3, 1);
@@ -40,7 +40,7 @@ describe("In Dots_and_Boxes", function() {
         {set: {key: 'delta', value: {dir: 'ver', row: 2, col: 3}}}]);
   });
 
-  it("Case3: YOU filling edge in a non-empty position is illegal", function() {
+  it("YOU filling edge in a non-empty position is illegal", function() {
     var board = gameLogic.getInitialBoard();
     var boardAfterMove0 = gameLogic.updateBoard(board, 'hor', 0, 0, 0);
     var boardAfterMove1 = angular.copy(boardAfterMove0);
@@ -52,7 +52,7 @@ describe("In Dots_and_Boxes", function() {
         {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 0}}}]);
   });
 
-  it("Case4: YOU filling edge in hor:3x0 is legal", function() {
+  it("YOU filling edge in hor:3x0 and getting one cell is legal", function() {
     var board = gameLogic.getInitialBoard();
     var boardBeforeMove = angular.copy(board);
     boardBeforeMove.isGameOver = false;
@@ -63,16 +63,94 @@ describe("In Dots_and_Boxes", function() {
     boardBeforeMove.ver = [ [0,0,1,1], [0,0,1,0], [1,1,0,1] ];
     boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
     boardBeforeMove.sum = [[2, 2, 2], [2, 2, 2], [3, 2, 2]];
-    gameLogic.printBoard(boardBeforeMove);
     var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'hor', 3, 0, 0);
-    gameLogic.printBoard(boardBeforeMove);
-    gameLogic.printBoard(boardAfterMove);
     expectMoveOk(0,
       {board: boardBeforeMove, delta: {dir: 'ver', row: 2, col: 1}},
       [{setTurn: {turnIndex : 0}},
         {set: {key: 'board', value: boardAfterMove}},
         {set: {key: 'delta', value: {dir: 'hor', row: 3, col: 0}}}]);
   });
+
+  it("YOU filling edge in hor:2x1 and getting two cells is legal", function() {
+    var board = gameLogic.getInitialBoard();
+    var boardBeforeMove = angular.copy(board);
+    boardBeforeMove.isGameOver = false;
+    boardBeforeMove.switchTurn = true;
+    boardBeforeMove.sumAllEdges = 12;
+    boardBeforeMove.score = [0, 0];
+    boardBeforeMove.hor = [ [1,1,0], [0,1,0], [1,0,1], [0,1,0] ];
+    boardBeforeMove.ver = [ [0,0,1,1], [0,1,1,0], [0,1,1,0] ];
+    boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+    boardBeforeMove.sum = [[1, 3, 2], [2, 3, 2], [2, 3, 2]];
+    var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'hor', 2, 1, 0);
+    expectMoveOk(0,
+      {board: boardBeforeMove, delta: {dir: 'ver', row: 0, col: 3}},
+      [{setTurn: {turnIndex : 0}},
+        {set: {key: 'board', value: boardAfterMove}},
+        {set: {key: 'delta', value: {dir: 'hor', row: 2, col: 1}}}]);
+  });
+
+  it("ME filling edge in hor:2x1 and getting two cells is legal", function() {
+    var board = gameLogic.getInitialBoard();
+    var boardBeforeMove = angular.copy(board);
+    boardBeforeMove.isGameOver = false;
+    boardBeforeMove.switchTurn = true;
+    boardBeforeMove.sumAllEdges = 12;
+    boardBeforeMove.score = [0, 0];
+    boardBeforeMove.hor = [ [1,1,0], [0,1,0], [1,0,1], [0,1,0] ];
+    boardBeforeMove.ver = [ [0,0,1,1], [0,1,1,0], [0,1,1,0] ];
+    boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+    boardBeforeMove.sum = [[1, 3, 2], [2, 3, 2], [2, 3, 2]];
+    var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'hor', 2, 1, 1);
+    expectMoveOk(1,
+      {board: boardBeforeMove, delta: {dir: 'ver', row: 0, col: 3}},
+      [{setTurn: {turnIndex : 1}},
+        {set: {key: 'board', value: boardAfterMove}},
+        {set: {key: 'delta', value: {dir: 'hor', row: 2, col: 1}}}]);
+  });
+
+  it("ME filling edge in hor:3x0 is legal", function() {
+    var board = gameLogic.getInitialBoard();
+    var boardBeforeMove = angular.copy(board);
+    boardBeforeMove.isGameOver = false;
+    boardBeforeMove.switchTurn = true;
+    boardBeforeMove.sumAllEdges = 12;
+    boardBeforeMove.score = [0, 0];
+    boardBeforeMove.hor = [ [1,1,0], [1,0,0], [1,1,1], [0,0,0] ];
+    boardBeforeMove.ver = [ [0,0,1,1], [0,0,1,0], [1,1,0,1] ];
+    boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+    boardBeforeMove.sum = [[2, 2, 2], [2, 2, 2], [3, 2, 2]];
+    var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'hor', 3, 0, 1);
+    expectMoveOk(1,
+      {board: boardBeforeMove, delta: {dir: 'ver', row: 2, col: 1}},
+      [{setTurn: {turnIndex : 1}},
+        {set: {key: 'board', value: boardAfterMove}},
+        {set: {key: 'delta', value: {dir: 'hor', row: 3, col: 0}}}]);
+  });
+
+  it("YOU filling edge in ver:2x3 is legal", function() {
+    var board = gameLogic.getInitialBoard();
+    var boardBeforeMove = angular.copy(board);
+    boardBeforeMove.isGameOver = false;
+    boardBeforeMove.switchTurn = true;
+    boardBeforeMove.sumAllEdges = 12;
+    boardBeforeMove.score = [0, 0];
+    boardBeforeMove.hor = [ [1,0,1], [1,1,0], [0,0,1], [0,0,1] ];
+    boardBeforeMove.ver = [ [0,0,1,0], [1,0,1,0], [1,1,1,0] ];
+    boardBeforeMove.color = [['', '', ''], ['', '', ''], ['', '', '']];
+    boardBeforeMove.sum = [[2, 2, 2], [2, 2, 2], [2, 2, 3]];
+    //gameLogic.printBoard(boardBeforeMove);
+    var boardAfterMove = gameLogic.updateBoard(boardBeforeMove, 'ver', 2, 3, 0);
+    //gameLogic.printBoard(boardBeforeMove);
+    //gameLogic.printBoard(boardAfterMove);
+    expectMoveOk(0,
+      {board: boardBeforeMove, delta: {dir: 'hor', row: 1, col: 0}},
+      [{setTurn: {turnIndex : 0}},
+        {set: {key: 'board', value: boardAfterMove}},
+        {set: {key: 'delta', value: {dir: 'ver', row: 2, col: 3}}}]);
+  });
+
+
     /*for (var i = 0; i < gameLogic.ROWSIZE+1; ++i) {
       for (var j = 0; j < gameLogic.COLSIZE; ++j) {
         boardBeforeLastMove.hor[i][j] = 1;
@@ -102,7 +180,8 @@ describe("In Dots_and_Boxes", function() {
         {set: {key: 'delta', value: {dir: 'hor', row: 3, col: 0}}}]);
   });*/
 
-  it("case5: YOU wins by filling edge in hor:3x2 is legal", function() {
+
+  it("YOU wins by filling edge in hor:3x2 is legal", function() {
     var board = gameLogic.getInitialBoard();
     var boardBeforeLastMove = angular.copy(board);
     //boardBeforeLastMove.isGameOver = false;
@@ -164,6 +243,24 @@ describe("In Dots_and_Boxes", function() {
                ['O', 'X', 'X']]}},
             {set: {key: 'delta', value: {row: 2, col: 2}}}]);
   }); */
+
+  it("cannot move after when isGameOver=true, no matter what the board looks like", function() { //what will happen if illegal case contains illegal moves
+    var board = gameLogic.getInitialBoard();
+    board.isGameOver = true;
+    expectIllegalMove(0, { board: board, delta: {dir: 'hor', row: 3, col: 2} },
+      [ {setTurn: {turnIndex: 1}},
+        {set: {key: 'board', value: board}},
+        {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 3}}}]);
+  });
+
+  it("cannot move after when sumAllEdges=24, no matter what the board looks like", function() { //what will happen if illegal case contains illegal moves
+    var board = gameLogic.getInitialBoard();
+    board.sumAllEdges = 24;
+    expectIllegalMove(0, { board: board, delta: {dir: 'hor', row: 3, col: 2} },
+      [ {setTurn: {turnIndex: 1}},
+        {set: {key: 'board', value: board}},
+        {set: {key: 'delta', value: {dir: 'ver', row: 1, col: 3}}}]);
+  });
 
   it("null move is illegal", function() {
     expectIllegalMove(0, {}, null);

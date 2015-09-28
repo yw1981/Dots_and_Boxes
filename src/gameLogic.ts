@@ -169,7 +169,7 @@ module gameLogic {
           }
         }
       }
-      else if (row !== ROWSIZE) {
+      if (row !== ROWSIZE) {
         boardAfterMove.sum[row][col] += 1; // check lower cell's sum
         if (boardAfterMove.sum[row][col] === 4) {
           boardAfterMove.switchTurn = false;
