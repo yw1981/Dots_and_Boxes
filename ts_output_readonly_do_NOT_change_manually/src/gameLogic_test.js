@@ -145,64 +145,56 @@ describe("In Dots_and_Boxes", function () {
                  ['X', 'O', 'O'],
                  ['O', 'X', 'X']]}},
               {set: {key: 'delta', value: {row: 2, col: 2}}}]);
+    }); */
+    it("null move is illegal", function () {
+        expectIllegalMove(0, {}, null);
     });
-  
-    it("null move is illegal", function() {
-      expectIllegalMove(0, {}, null);
+    it("move without board is illegal", function () {
+        expectIllegalMove(0, {}, [{ setTurn: { turnIndex: 1 } }]);
     });
-  
-    it("move without board is illegal", function() {
-      expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}}]);
+    it("move without delta is illegal", function () {
+        var board = gameLogic.getInitialBoard();
+        expectIllegalMove(0, {}, [{ setTurn: { turnIndex: 1 } },
+            { set: { key: 'board', value: board } }]);
     });
-  
-    it("move without delta is illegal", function() {
-      expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
-        {set: {key: 'board', value:
-          [['X', '', ''],
-           ['', '', ''],
-           ['', '', '']]}}]);
-    });
-  
-    it("placing X outside the board (in 3x0) is illegal", function() {
-      expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
-        {set: {key: 'board', value:
-          [['X', '', ''],
-           ['', '', ''],
-           ['', '', '']]}},
-        {set: {key: 'delta', value: {row: 3, col: 0}}}]);
-    });
-  
-    it("placing X in 0x0 but setTurn to yourself is illegal", function() {
-      expectIllegalMove(0, {}, [{setTurn: {turnIndex : 0}},
-        {set: {key: 'board', value:
-          [['X', '', ''],
-           ['', '', ''],
-           ['', '', '']]}},
-        {set: {key: 'delta', value: {row: 0, col: 0}}}]);
-    });
-  
-    it("placing X in 0x0 but setting the board wrong is illegal", function() {
-      expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
-        {set: {key: 'board', value:
-          [['X', 'X', ''],
-           ['', '', ''],
-           ['', '', '']]}},
-        {set: {key: 'delta', value: {row: 0, col: 0}}}]);
-    });
-  
-    it("getPossibleMoves returns exactly one cell", function() {
-      var board =
-          [['O', 'O', 'X'],
-           ['X', 'X', 'O'],
-           ['O', 'X', '']];
-      var possibleMoves = gameLogic.getPossibleMoves(board, 0);
-      var expectedMove = [{endMatch: {endMatchScores: [0, 0]}},
+    /*  it("YOU filling edge outside the board (in hor:4x0) is illegal", function() {
+        var board = gameLogic.getInitialBoard();
+        expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
+          {set: {key: 'board', value: board}},
+          {set: {key: 'delta', value: {row: 3, col: 0}}}]);
+      });
+    
+      it("placing X in 0x0 but setTurn to yourself is illegal", function() {
+        expectIllegalMove(0, {}, [{setTurn: {turnIndex : 0}},
           {set: {key: 'board', value:
+            [['X', '', ''],
+             ['', '', ''],
+             ['', '', '']]}},
+          {set: {key: 'delta', value: {row: 0, col: 0}}}]);
+      });
+    
+      it("placing X in 0x0 but setting the board wrong is illegal", function() {
+        expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
+          {set: {key: 'board', value:
+            [['X', 'X', ''],
+             ['', '', ''],
+             ['', '', '']]}},
+          {set: {key: 'delta', value: {row: 0, col: 0}}}]);
+      });
+    
+      it("getPossibleMoves returns exactly one cell", function() {
+        var board =
             [['O', 'O', 'X'],
              ['X', 'X', 'O'],
-             ['O', 'X', 'X']]}},
-          {set: {key: 'delta', value: {row: 2, col: 2}}}];
-      expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
-    });
-  */
+             ['O', 'X', '']];
+        var possibleMoves = gameLogic.getPossibleMoves(board, 0);
+        var expectedMove = [{endMatch: {endMatchScores: [0, 0]}},
+            {set: {key: 'board', value:
+              [['O', 'O', 'X'],
+               ['X', 'X', 'O'],
+               ['O', 'X', 'X']]}},
+            {set: {key: 'delta', value: {row: 2, col: 2}}}];
+        expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
+      });
+    */
 });

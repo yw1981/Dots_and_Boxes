@@ -163,7 +163,7 @@ describe("In Dots_and_Boxes", function() {
                ['X', 'O', 'O'],
                ['O', 'X', 'X']]}},
             {set: {key: 'delta', value: {row: 2, col: 2}}}]);
-  });
+  }); */
 
   it("null move is illegal", function() {
     expectIllegalMove(0, {}, null);
@@ -174,19 +174,15 @@ describe("In Dots_and_Boxes", function() {
   });
 
   it("move without delta is illegal", function() {
+    var board = gameLogic.getInitialBoard();
     expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
-      {set: {key: 'board', value:
-        [['X', '', ''],
-         ['', '', ''],
-         ['', '', '']]}}]);
+      {set: {key: 'board', value: board}}]);
   });
 
-  it("placing X outside the board (in 3x0) is illegal", function() {
+/*  it("YOU filling edge outside the board (in hor:4x0) is illegal", function() {
+    var board = gameLogic.getInitialBoard();
     expectIllegalMove(0, {}, [{setTurn: {turnIndex : 1}},
-      {set: {key: 'board', value:
-        [['X', '', ''],
-         ['', '', ''],
-         ['', '', '']]}},
+      {set: {key: 'board', value: board}},
       {set: {key: 'delta', value: {row: 3, col: 0}}}]);
   });
 
