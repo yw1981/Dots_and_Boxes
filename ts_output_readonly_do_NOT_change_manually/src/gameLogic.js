@@ -44,65 +44,65 @@ var gameLogic;
         return board;
     }
     gameLogic.getInitialBoard = getInitialBoard;
-    function printBoard(board) {
-        if (!board) {
-            console.log("board is undefined");
+    /*helper function for debugging
+    /*  export function printBoard(board:Board):void {
+        if ( !board ) {
+          console.log("board is undefined");
         }
-        console.log('isGameOver=' + board.isGameOver, ' switchTurn=' + board.switchTurn, ' sumAllEdges=' + board.sumAllEdges, ' score=' + board.score);
-        if (board.hor) {
-            var output = '';
-            output = output + 'hor: [';
-            for (var i = 0; i < gameLogic.ROWSIZE + 1; ++i) {
-                output = output + '[';
-                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-                    output = output + board.hor[i][j] + ', ';
-                }
-                output = output + ']';
+        console.log('isGameOver='+board.isGameOver,' switchTurn='+board.switchTurn, ' sumAllEdges='+board.sumAllEdges, ' score='+board.score);
+        if (board.hor){
+          var output:string = '';
+          output = output+'hor: [';
+          for (var i = 0; i < ROWSIZE+1; ++i) {
+            output = output + '[';
+            for (var j = 0; j < COLSIZE; ++j) {
+              output = output+board.hor[i][j] + ', ';
             }
             output = output + ']';
-            console.log(output);
+          }
+          output = output + ']';
+          console.log(output);
         }
-        if (board.ver) {
-            var output = '';
-            output = output + 'ver: [';
-            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-                output = output + '[';
-                for (var j = 0; j < gameLogic.COLSIZE + 1; ++j) {
-                    output = output + board.ver[i][j] + ', ';
-                }
-                output = output + ']';
+        if (board.ver){
+          var output:string = '';
+          output = output+'ver: [';
+          for (var i = 0; i < ROWSIZE; ++i) {
+            output = output + '[';
+            for (var j = 0; j < COLSIZE+1; ++j) {
+              output = output+board.ver[i][j] + ', ';
             }
             output = output + ']';
-            console.log(output);
+          }
+          output = output + ']';
+          console.log(output);
         }
-        if (board.sum) {
-            var output = '';
-            output = output + 'sum: [';
-            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-                output = output + '[';
-                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-                    output = output + board.sum[i][j] + ', ';
-                }
-                output = output + ']';
+        if (board.sum){
+          var output:string = '';
+          output = output+'sum: [';
+          for (var i = 0; i < ROWSIZE; ++i) {
+            output = output + '[';
+            for (var j = 0; j < COLSIZE; ++j) {
+              output = output+board.sum[i][j] + ', ';
             }
             output = output + ']';
-            console.log(output);
+          }
+          output = output + ']';
+          console.log(output);
         }
-        if (board.color) {
-            var output = '';
-            output = output + 'color: [';
-            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-                output = output + '[';
-                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
-                    output = output + board.color[i][j] + ', ';
-                }
-                output = output + ']';
+        if (board.color){
+          var output:string = '';
+          output = output+'color: [';
+          for (var i = 0; i < ROWSIZE; ++i) {
+            output = output + '[';
+            for (var j = 0; j < COLSIZE; ++j) {
+              output = output+board.color[i][j] + ', ';
             }
             output = output + ']';
-            console.log(output);
+          }
+          output = output + ']';
+          console.log(output);
         }
-    }
-    gameLogic.printBoard = printBoard;
+    } */
     /**
      * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
      * Returns an empty array if the game is over.

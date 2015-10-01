@@ -270,10 +270,8 @@ describe("In Dots_and_Boxes", function() {
      boardBeforeLastMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 0, 1]];
      boardBeforeLastMove.color = [['YOU', 'YOU', 'YOU'], ['YOU', 'YOU', 'YOU'], ['ME', '', 'ME']];
      boardBeforeLastMove.sum = [[4, 4, 4], [4, 4, 4], [4, 3, 4]];
-     gameLogic.printBoard(boardBeforeLastMove);
+     //gameLogic.printBoard(boardBeforeLastMove);
      var boardAfterLastMove = gameLogic.updateBoard(boardBeforeLastMove, 'ver', 2, 2, 1);
-     gameLogic.printBoard(boardBeforeLastMove);
-     gameLogic.printBoard(boardAfterLastMove);
      expectMoveOk(1, { board: boardBeforeLastMove, delta: { dir: 'ver', row: 0, col: 3 } },
        [ { endMatch: {endMatchScores: boardAfterLastMove.score}},
          { set: { key: 'board', value: boardAfterLastMove } },

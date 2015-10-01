@@ -64,8 +64,8 @@ module gameLogic {
     }
     return board;
   }
-
-  export function printBoard(board:Board):void {
+/*helper function for debugging
+/*  export function printBoard(board:Board):void {
     if ( !board ) {
       console.log("board is undefined");
     }
@@ -122,7 +122,7 @@ module gameLogic {
       output = output + ']';
       console.log(output);
     }
-}
+} */
 
   /**
    * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
