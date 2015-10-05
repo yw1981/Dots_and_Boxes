@@ -36,16 +36,19 @@ describe("aiService", function() {
     boardAfterMove.hor = [[1, 1, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1]];
     boardAfterMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [0, 0, 1, 1]];
     boardAfterMove.color = [['ME', '', 'YOU'], ['ME', '', 'ME'], ['', '', 'ME']];
-    boardAfterMove.sum = [[4, 3, 4], [4, 3, 4], [2, 3, 4]];
+    boardAfterMove.sum = [[4, 3, 4], [4, 2, 4], [2, 2, 4]];
+    /*let possibleMoves = aiService.getPossibleMoves(boardBeforeMove, 0);
+    let expectedMove = [ {setTurn: {turnIndex : 0}},
+        {set: {key: 'board', value: boardAfterMove}},
+        {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
+    expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
+  }); */
     let move = aiService.createComputerMove(boardBeforeMove, 0, {maxDepth: 10});
-    gameLogic.printBoard(boardBeforeMove);
-    gameLogic.printBoard(move[1].set.value);
-    gameLogic.printDelta(move[2].set.value);
     let expectedMove = [{setTurn: {turnIndex : 0}},
       {set: {key: 'board', value: boardAfterMove}},
-      {set: {key: 'delta', value: {dir: 'ver', row: 2, col: 1}}}];
-      expect(angular.equals(move, [expectedMove])).toBe(true);
-    });
+      {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
+    expect(angular.equals(move, expectedMove)).toBe(true);
+  });
 
 /*  it("YOU/computer find an immediate move that can close a cell", function() {
     var board = gameLogic.getInitialBoard();
