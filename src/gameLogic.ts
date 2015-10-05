@@ -64,8 +64,8 @@ module gameLogic {
     }
     return board;
   }
-/*helper function for debugging
-/*  export function printBoard(board:Board):void {
+//helper function for debugging
+  export function printBoard(board:Board):void {
     if ( !board ) {
       console.log("board is undefined");
     }
@@ -122,34 +122,13 @@ module gameLogic {
       output = output + ']';
       console.log(output);
     }
-} */
+}
 
   /**
    * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
    * Returns an empty array if the game is over.
    */
-/*  export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
-    var possibleMoves: IMove[] = [];
-    for (var i = 0; i < ROWSIZE+1; i++) {
-      for (var j = 0; j < COLSIZE; j++) {
-        try {
-          possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
-        } catch (e) {
-          // The cell in that position was full.
-        }
-      }
-    }
-    for (var i = 0; i < ROWSIZE; i++) {
-      for (var j = 0; j < COLSIZE+1; j++) {
-        try {
-          possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
-        } catch (e) {
-          // The cell in that position was full.
-        }
-      }
-    }
-    return possibleMoves;
-  } */
+
 
   export function updateBoard(board: Board, dir: string, row: number, col: number, turnIndexBeforeMove: number):Board {
     var boardAfterMove = angular.copy(board);
@@ -290,4 +269,13 @@ module gameLogic {
     }
     return true;
   }
+
+  //helper function to check if a move is legal, different from isMoveOk
+  function isMoveLegal(move: IMove): boolean {
+    if (move[2].set.value.dir === "hor" && move[1].set.value.hor[move[2].set.value.row][move[2].set.value.col] !== 0 ) {
+      return false;
+    }
+    else return true;
+  }
+
 }

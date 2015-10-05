@@ -44,91 +44,70 @@ var gameLogic;
         return board;
     }
     gameLogic.getInitialBoard = getInitialBoard;
-    /*helper function for debugging
-    /*  export function printBoard(board:Board):void {
-        if ( !board ) {
-          console.log("board is undefined");
+    //helper function for debugging
+    function printBoard(board) {
+        if (!board) {
+            console.log("board is undefined");
         }
-        console.log('isGameOver='+board.isGameOver,' switchTurn='+board.switchTurn, ' sumAllEdges='+board.sumAllEdges, ' score='+board.score);
-        if (board.hor){
-          var output:string = '';
-          output = output+'hor: [';
-          for (var i = 0; i < ROWSIZE+1; ++i) {
-            output = output + '[';
-            for (var j = 0; j < COLSIZE; ++j) {
-              output = output+board.hor[i][j] + ', ';
+        console.log('isGameOver=' + board.isGameOver, ' switchTurn=' + board.switchTurn, ' sumAllEdges=' + board.sumAllEdges, ' score=' + board.score);
+        if (board.hor) {
+            var output = '';
+            output = output + 'hor: [';
+            for (var i = 0; i < gameLogic.ROWSIZE + 1; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                    output = output + board.hor[i][j] + ', ';
+                }
+                output = output + ']';
             }
             output = output + ']';
-          }
-          output = output + ']';
-          console.log(output);
+            console.log(output);
         }
-        if (board.ver){
-          var output:string = '';
-          output = output+'ver: [';
-          for (var i = 0; i < ROWSIZE; ++i) {
-            output = output + '[';
-            for (var j = 0; j < COLSIZE+1; ++j) {
-              output = output+board.ver[i][j] + ', ';
+        if (board.ver) {
+            var output = '';
+            output = output + 'ver: [';
+            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE + 1; ++j) {
+                    output = output + board.ver[i][j] + ', ';
+                }
+                output = output + ']';
             }
             output = output + ']';
-          }
-          output = output + ']';
-          console.log(output);
+            console.log(output);
         }
-        if (board.sum){
-          var output:string = '';
-          output = output+'sum: [';
-          for (var i = 0; i < ROWSIZE; ++i) {
-            output = output + '[';
-            for (var j = 0; j < COLSIZE; ++j) {
-              output = output+board.sum[i][j] + ', ';
+        if (board.sum) {
+            var output = '';
+            output = output + 'sum: [';
+            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                    output = output + board.sum[i][j] + ', ';
+                }
+                output = output + ']';
             }
             output = output + ']';
-          }
-          output = output + ']';
-          console.log(output);
+            console.log(output);
         }
-        if (board.color){
-          var output:string = '';
-          output = output+'color: [';
-          for (var i = 0; i < ROWSIZE; ++i) {
-            output = output + '[';
-            for (var j = 0; j < COLSIZE; ++j) {
-              output = output+board.color[i][j] + ', ';
+        if (board.color) {
+            var output = '';
+            output = output + 'color: [';
+            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+                output = output + '[';
+                for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                    output = output + board.color[i][j] + ', ';
+                }
+                output = output + ']';
             }
             output = output + ']';
-          }
-          output = output + ']';
-          console.log(output);
+            console.log(output);
         }
-    } */
+    }
+    gameLogic.printBoard = printBoard;
     /**
      * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
      * Returns an empty array if the game is over.
      */
-    /*  export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
-        var possibleMoves: IMove[] = [];
-        for (var i = 0; i < ROWSIZE+1; i++) {
-          for (var j = 0; j < COLSIZE; j++) {
-            try {
-              possibleMoves.push(createMove(board, 'hor', i, j, turnIndexBeforeMove));
-            } catch (e) {
-              // The cell in that position was full.
-            }
-          }
-        }
-        for (var i = 0; i < ROWSIZE; i++) {
-          for (var j = 0; j < COLSIZE+1; j++) {
-            try {
-              possibleMoves.push(createMove(board, 'ver', i, j, turnIndexBeforeMove));
-            } catch (e) {
-              // The cell in that position was full.
-            }
-          }
-        }
-        return possibleMoves;
-      } */
     function updateBoard(board, dir, row, col, turnIndexBeforeMove) {
         var boardAfterMove = angular.copy(board);
         if (dir === 'hor') {
@@ -269,4 +248,12 @@ var gameLogic;
         return true;
     }
     gameLogic.isMoveOk = isMoveOk;
+    //helper function to check if a move is legal, different from isMoveOk
+    function isMoveLegal(move) {
+        if (move[2].set.value.dir === "hor" && move[1].set.value.hor[move[2].set.value.row][move[2].set.value.col] !== 0) {
+            return false;
+        }
+        else
+            return true;
+    }
 })(gameLogic || (gameLogic = {}));
