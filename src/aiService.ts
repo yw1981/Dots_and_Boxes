@@ -17,7 +17,29 @@ module aiService {
    */
    export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
      var possibleMoves: IMove[] = [];
-     for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+     for (var i = 0; i<gameLogic.ROWSIZE+1; ++i) {
+       for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+         if (board.hor[i][j] === 0) {
+           try {
+             possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
+           } catch (e) {
+             // The cell in that position was full.
+           }
+         }
+       }
+     }
+     for (var i = 0; i<gameLogic.ROWSIZE; ++i) {
+       for (var j = 0; j < gameLogic.COLSIZE+1; ++j) {
+         if (board.ver[i][j] === 0) {
+           try {
+             possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
+           } catch (e) {
+             // The cell in that position was full.
+           }
+         }
+       }
+     }
+     /*for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
        for (var j = 0; j < gameLogic.COLSIZE; j++) {
          if (board.sum[i][j] === 3) {
            if (board.hor[i][j] === 0) { //only one edge can be 0, so can use else if
@@ -80,7 +102,7 @@ module aiService {
            }
          }
        }
-     }
+     } */
      return possibleMoves;
    }
 

@@ -123,7 +123,11 @@ module gameLogic {
       console.log(output);
     }
 }
-
+  export function printDelta(delta: BoardDelta):void {
+    var output:string = '';
+    output = delta.dir + ":" + delta.row + "x" + delta.col;
+    console.log(output);
+  }
   /**
    * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
    * Returns an empty array if the game is over.

@@ -15,70 +15,92 @@ var aiService;
      */
     function getPossibleMoves(board, turnIndexBeforeMove) {
         var possibleMoves = [];
-        for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-            for (var j = 0; j < gameLogic.COLSIZE; j++) {
-                if (board.sum[i][j] === 3) {
-                    if (board.hor[i][j] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
+        for (var i = 0; i < gameLogic.ROWSIZE + 1; ++i) {
+            for (var j = 0; j < gameLogic.COLSIZE; ++j) {
+                if (board.hor[i][j] === 0) {
+                    try {
+                        possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
-                    if (board.hor[i + 1][j] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'hor', i + 1, j, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
-                    }
-                    if (board.ver[i][j] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
-                    }
-                    if (board.ver[i][j + 1] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'ver', i, j + 1, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
-                    }
-                }
-                else if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
-                    if (board.hor[i][j] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
-                    }
-                    if (board.hor[i + 1][j] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'hor', i + 1, j, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
-                    }
-                    if (board.ver[i][j] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
-                    }
-                    if (board.ver[i][j + 1] === 0) {
-                        try {
-                            possibleMoves.push(gameLogic.createMove(board, 'ver', i, j + 1, turnIndexBeforeMove));
-                        }
-                        catch (e) {
-                        }
+                    catch (e) {
                     }
                 }
             }
         }
+        for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+            for (var j = 0; j < gameLogic.COLSIZE + 1; ++j) {
+                if (board.ver[i][j] === 0) {
+                    try {
+                        possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
+                    }
+                    catch (e) {
+                    }
+                }
+            }
+        }
+        /*for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+          for (var j = 0; j < gameLogic.COLSIZE; j++) {
+            if (board.sum[i][j] === 3) {
+              if (board.hor[i][j] === 0) { //only one edge can be 0, so can use else if
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+              if (board.hor[i+1][j] === 0) {
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'hor', i+1, j, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+              if (board.ver[i][j] === 0) {
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+              if (board.ver[i][j+1] === 0) {
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'ver', i, j+1, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+            }
+            else if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
+              if (board.hor[i][j] === 0) { //only one edge can be 0, so can use else if
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+              if (board.hor[i+1][j] === 0) {
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'hor', i+1, j, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+              if (board.ver[i][j] === 0) {
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+              if (board.ver[i][j+1] === 0) {
+                try {
+                  possibleMoves.push(gameLogic.createMove(board, 'ver', i, j+1, turnIndexBeforeMove));
+                } catch (e) {
+                  // The cell in that position was full.
+                }
+              }
+            }
+          }
+        } */
         return possibleMoves;
     }
     aiService.getPossibleMoves = getPossibleMoves;

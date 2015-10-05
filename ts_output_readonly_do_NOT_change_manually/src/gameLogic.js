@@ -104,6 +104,12 @@ var gameLogic;
         }
     }
     gameLogic.printBoard = printBoard;
+    function printDelta(delta) {
+        var output = '';
+        output = delta.dir + ":" + delta.row + "x" + delta.col;
+        console.log(output);
+    }
+    gameLogic.printDelta = printDelta;
     /**
      * Returns all the possible moves for the given board and turnIndexBeforeMove; turnIndex = 0 for YOU and 1 for ME
      * Returns an empty array if the game is over.
