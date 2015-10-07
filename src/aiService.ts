@@ -39,6 +39,7 @@ module aiService {
          }
        }
      } */
+
      for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
        for (var j = 0; j < gameLogic.COLSIZE; j++) {
          if (board.sum[i][j] === 3) {
@@ -71,7 +72,11 @@ module aiService {
              }
            }
          }
-         else if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
+       }
+     }
+     for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+       for (var j = 0; j < gameLogic.COLSIZE; j++) {
+         if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
            if (board.hor[i][j] === 0) { //only one edge can be 0, so can use else if
              try {
                possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
@@ -102,7 +107,42 @@ module aiService {
            }
          }
        }
-     } 
+     }
+     for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+       for (var j = 0; j < gameLogic.COLSIZE; j++) {
+         if (board.sum[i][j] === 2){
+           if (board.hor[i][j] === 0) { //only one edge can be 0, so can use else if
+             try {
+               possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
+             } catch (e) {
+               // The cell in that position was full.
+             }
+           }
+           if (board.hor[i+1][j] === 0) {
+             try {
+               possibleMoves.push(gameLogic.createMove(board, 'hor', i+1, j, turnIndexBeforeMove));
+             } catch (e) {
+               // The cell in that position was full.
+             }
+           }
+           if (board.ver[i][j] === 0) {
+             try {
+               possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
+             } catch (e) {
+               // The cell in that position was full.
+             }
+           }
+           if (board.ver[i][j+1] === 0) {
+             try {
+               possibleMoves.push(gameLogic.createMove(board, 'ver', i, j+1, turnIndexBeforeMove));
+             } catch (e) {
+               // The cell in that position was full.
+             }
+           }
+         }
+       }
+     }
+
      return possibleMoves;
    }
 
@@ -129,14 +169,14 @@ module aiService {
   }
 
   function getStateScoreForIndex0(move: IMove, playerIndex: number): number {
-    return move[1].set.value.score[0];
-    /*if (move[0].endMatch) {
+    //return move[1].set.value.score[0];
+    if (move[0].endMatch) {
       let endMatchScores = move[0].endMatch.endMatchScores;
       return endMatchScores[0] > endMatchScores[1] ? Number.POSITIVE_INFINITY
           : endMatchScores[0] < endMatchScores[1] ? Number.NEGATIVE_INFINITY
           : 0;
     }
-    return 0; */
+    return 0;
   }
 
   function getNextStates(move: IMove, playerIndex: number): IMove[] {

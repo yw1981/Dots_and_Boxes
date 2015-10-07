@@ -1,5 +1,5 @@
 describe("aiService", function () {
-    it("getPossibleMoves returns exactly one move", function () {
+    it("case1. getPossibleMoves returns exactly one move", function () {
         var board = gameLogic.getInitialBoard();
         var boardBeforeLastMove = angular.copy(board);
         //boardBeforeLastMove.isGameOver = false;
@@ -17,7 +17,7 @@ describe("aiService", function () {
             { set: { key: 'delta', value: { dir: 'hor', row: 3, col: 2 } } }];
         expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
     });
-    it("YOU/computer find an immediate winning move", function () {
+    it("case2. YOU/computer find an immediate winning move on top", function () {
         var board = gameLogic.getInitialBoard();
         var boardBeforeMove = angular.copy(board);
         boardBeforeMove.switchTurn = true;
@@ -41,10 +41,76 @@ describe("aiService", function () {
             {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
         expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
       }); */
-        var move = aiService.createComputerMove(boardBeforeMove, 0, { maxDepth: 10 });
+        var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
         var expectedMove = [{ setTurn: { turnIndex: 0 } },
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'ver', row: 0, col: 2 } } }];
+        expect(angular.equals(move, expectedMove)).toBe(true);
+    });
+    it("case3. YOU/computer find an immediate winning move on the bottom", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeMove = angular.copy(board);
+        boardBeforeMove.switchTurn = true;
+        boardBeforeMove.sumAllEdges = 19;
+        boardBeforeMove.score = [0, 4];
+        boardBeforeMove.hor = [[1, 1, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1]];
+        boardBeforeMove.ver = [[1, 1, 0, 0], [1, 1, 1, 1], [1, 0, 1, 1]];
+        boardBeforeMove.color = [['ME', '', ''], ['ME', '', 'ME'], ['', '', 'ME']];
+        boardBeforeMove.sum = [[4, 2, 2], [4, 2, 4], [3, 2, 4]];
+        var boardAfterMove = angular.copy(boardBeforeMove);
+        boardAfterMove.switchTurn = false;
+        boardAfterMove.sumAllEdges = 20;
+        boardAfterMove.score = [1, 4];
+        boardAfterMove.hor = [[1, 1, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1]];
+        boardAfterMove.ver = [[1, 1, 0, 0], [1, 1, 1, 1], [1, 1, 1, 1]];
+        boardAfterMove.color = [['ME', '', ''], ['ME', '', 'ME'], ['YOU', '', 'ME']];
+        boardAfterMove.sum = [[4, 2, 2], [4, 2, 4], [4, 3, 4]];
+        var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
+        var expectedMove = [{ setTurn: { turnIndex: 0 } },
+            { set: { key: 'board', value: boardAfterMove } },
+            { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 1 } } }];
+        expect(angular.equals(move, expectedMove)).toBe(true);
+    });
+    it("case4. there are only cells with sum 4 and 2 ", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeMove = angular.copy(board);
+        boardBeforeMove.switchTurn = true;
+        boardBeforeMove.sumAllEdges = 17;
+        boardBeforeMove.score = [0, 3];
+        boardBeforeMove.hor = [[1, 0, 0], [1, 1, 1], [1, 0, 0], [1, 1, 1]];
+        boardBeforeMove.ver = [[1, 1, 0, 1], [1, 1, 0, 1], [1, 1, 0, 1]];
+        boardBeforeMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
+        boardBeforeMove.sum = [[4, 2, 2], [4, 2, 2], [4, 2, 2]];
+        var boardAfterMove = angular.copy(boardBeforeMove);
+        boardAfterMove.switchTurn = true;
+        boardAfterMove.sumAllEdges = 18;
+        boardAfterMove.score = [0, 3];
+        boardAfterMove.hor = [[1, 1, 0], [1, 1, 1], [1, 0, 0], [1, 1, 1]];
+        boardAfterMove.ver = [[1, 1, 0, 1], [1, 1, 0, 1], [1, 1, 0, 1]];
+        boardAfterMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
+        boardAfterMove.sum = [[4, 3, 2], [4, 2, 2], [4, 2, 2]];
+        var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
+        gameLogic.printDelta(move[2].set.value);
+        gameLogic.printBoard(move[1].set.value);
+        var expectedMove = [{ setTurn: { turnIndex: 1 } },
+            { set: { key: 'board', value: boardAfterMove } },
+            { set: { key: 'delta', value: { dir: 'hor', row: 0, col: 1 } } }];
+        //console.log(angular.equals(move, expectedMove));
+        expect(angular.equals(move, expectedMove)).toBe(true);
+    });
+    it("case5. when board is empty, which move will computer choose?", function () {
+        var board = gameLogic.getInitialBoard();
+        var boardBeforeMove = angular.copy(board);
+        var boardAfterMove = angular.copy(boardBeforeMove);
+        boardAfterMove.hor[0][0] = 1;
+        boardAfterMove.sum[0][0] = 1;
+        boardAfterMove.sumAllEdges = 1;
+        var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
+        gameLogic.printDelta(move[2].set.value);
+        gameLogic.printBoard(move[1].set.value);
+        var expectedMove = [{ setTurn: { turnIndex: 1 } },
+            { set: { key: 'board', value: boardAfterMove } },
+            { set: { key: 'delta', value: { dir: 'hor', row: 0, col: 0 } } }];
         expect(angular.equals(move, expectedMove)).toBe(true);
     });
     /*  it("YOU/computer find an immediate move that can close a cell", function() {
