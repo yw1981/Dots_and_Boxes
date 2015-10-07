@@ -35,13 +35,9 @@ describe("aiService", function () {
         boardAfterMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [0, 0, 1, 1]];
         boardAfterMove.color = [['ME', '', 'YOU'], ['ME', '', 'ME'], ['', '', 'ME']];
         boardAfterMove.sum = [[4, 3, 4], [4, 2, 4], [2, 2, 4]];
-        /*let possibleMoves = aiService.getPossibleMoves(boardBeforeMove, 0);
-        let expectedMove = [ {setTurn: {turnIndex : 0}},
-            {set: {key: 'board', value: boardAfterMove}},
-            {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
-        expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
-      }); */
         var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
+        gameLogic.printDelta(move[2].set.value);
+        gameLogic.printBoard(move[1].set.value);
         var expectedMove = [{ setTurn: { turnIndex: 0 } },
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'ver', row: 0, col: 2 } } }];
@@ -66,6 +62,8 @@ describe("aiService", function () {
         boardAfterMove.color = [['ME', '', ''], ['ME', '', 'ME'], ['YOU', '', 'ME']];
         boardAfterMove.sum = [[4, 2, 2], [4, 2, 4], [4, 3, 4]];
         var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
+        gameLogic.printDelta(move[2].set.value);
+        gameLogic.printBoard(move[1].set.value);
         var expectedMove = [{ setTurn: { turnIndex: 0 } },
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'ver', row: 2, col: 1 } } }];
@@ -90,8 +88,8 @@ describe("aiService", function () {
         boardAfterMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
         boardAfterMove.sum = [[4, 3, 2], [4, 2, 2], [4, 2, 2]];
         var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
-        gameLogic.printDelta(move[2].set.value);
-        gameLogic.printBoard(move[1].set.value);
+        //gameLogic.printDelta(move[2].set.value);
+        //gameLogic.printBoard(move[1].set.value);
         var expectedMove = [{ setTurn: { turnIndex: 1 } },
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'hor', row: 0, col: 1 } } }];
@@ -106,8 +104,8 @@ describe("aiService", function () {
         boardAfterMove.sum[0][0] = 1;
         boardAfterMove.sumAllEdges = 1;
         var move = aiService.createComputerMove(boardBeforeMove, 0, { millisecondsLimit: 1000 });
-        gameLogic.printDelta(move[2].set.value);
-        gameLogic.printBoard(move[1].set.value);
+        //gameLogic.printDelta(move[2].set.value);
+        //gameLogic.printBoard(move[1].set.value);
         var expectedMove = [{ setTurn: { turnIndex: 1 } },
             { set: { key: 'board', value: boardAfterMove } },
             { set: { key: 'delta', value: { dir: 'hor', row: 0, col: 0 } } }];
