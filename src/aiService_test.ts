@@ -1,6 +1,7 @@
 describe("aiService", function() {
 
   it("case1. getPossibleMoves returns exactly one move", function() {
+    console.log("case1");
     var board = gameLogic.getInitialBoard();
     var boardBeforeLastMove = angular.copy(board);
     //boardBeforeLastMove.isGameOver = false;
@@ -20,6 +21,7 @@ describe("aiService", function() {
   });
 
   it("case2. YOU/computer find an immediate winning move on top", function() {
+    console.log("case2");
     var board = gameLogic.getInitialBoard();
     var boardBeforeMove = angular.copy(board);
     boardBeforeMove.switchTurn = true;
@@ -37,17 +39,21 @@ describe("aiService", function() {
     boardAfterMove.ver = [[1, 1, 1, 1], [1, 1, 1, 1], [0, 0, 1, 1]];
     boardAfterMove.color = [['ME', '', 'YOU'], ['ME', '', 'ME'], ['', '', 'ME']];
     boardAfterMove.sum = [[4, 3, 4], [4, 2, 4], [2, 2, 4]];
-    /*let possibleMoves = aiService.getPossibleMoves(boardBeforeMove, 0);
-    let expectedMove = [ {setTurn: {turnIndex : 0}},
-        {set: {key: 'board', value: boardAfterMove}},
-        {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
-    expect(angular.equals(possibleMoves, [expectedMove])).toBe(true);
-  }); */
+    gameLogic.printBoard(boardBeforeMove);
+    // let possibleMoves = aiService.getPossibleMoves(boardBeforeMove, 0);
+    // console.log("# of possible moves (expect 5) = " + possibleMoves.length);
+    // for (let m in possibleMoves){
+    //   console.log("%o", possibleMoves[m]);
+    // }
+    // expect(angular.equals(true, true)).toBe(true);
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
+    gameLogic.printDelta(move[2].set.value);
+    gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 0}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
     expect(angular.equals(move, expectedMove)).toBe(true);
+
   });
 
   it("case3. YOU/computer find an immediate winning move on the bottom", function() {
@@ -69,6 +75,8 @@ describe("aiService", function() {
     boardAfterMove.color = [['ME', '', ''], ['ME', '', 'ME'], ['YOU', '', 'ME']];
     boardAfterMove.sum = [[4, 2, 2], [4, 2, 4], [4, 3, 4]];
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
+    gameLogic.printDelta(move[2].set.value);
+    gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 0}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'ver', row: 2, col: 1}}}];
@@ -94,14 +102,14 @@ describe("aiService", function() {
     boardAfterMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
     boardAfterMove.sum = [[4, 3, 2], [4, 2, 2], [4, 2, 2]];
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
-    gameLogic.printDelta(move[2].set.value);
-    gameLogic.printBoard(move[1].set.value);
+    //gameLogic.printDelta(move[2].set.value);
+    //gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 1}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 1}}}];
     //console.log(angular.equals(move, expectedMove));
     expect(angular.equals(move, expectedMove)).toBe(true);
-  }); 
+  });
 
   it("case5. when board is empty, which move will computer choose?", function() {
     var board = gameLogic.getInitialBoard();
@@ -111,8 +119,8 @@ describe("aiService", function() {
     boardAfterMove.sum[0][0] = 1;
     boardAfterMove.sumAllEdges = 1;
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
-    gameLogic.printDelta(move[2].set.value);
-    gameLogic.printBoard(move[1].set.value);
+    //gameLogic.printDelta(move[2].set.value);
+    //gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 1}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 0}}}];
