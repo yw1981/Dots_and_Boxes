@@ -40,15 +40,7 @@ describe("aiService", function() {
     boardAfterMove.color = [['ME', '', 'YOU'], ['ME', '', 'ME'], ['', '', 'ME']];
     boardAfterMove.sum = [[4, 3, 4], [4, 2, 4], [2, 2, 4]];
     gameLogic.printBoard(boardBeforeMove);
-    // let possibleMoves = aiService.getPossibleMoves(boardBeforeMove, 0);
-    // console.log("# of possible moves (expect 5) = " + possibleMoves.length);
-    // for (let m in possibleMoves){
-    //   console.log("%o", possibleMoves[m]);
-    // }
-    // expect(angular.equals(true, true)).toBe(true);
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
-    gameLogic.printDelta(move[2].set.value);
-    gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 0}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'ver', row: 0, col: 2}}}];
@@ -102,12 +94,9 @@ describe("aiService", function() {
     boardAfterMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
     boardAfterMove.sum = [[4, 3, 2], [4, 2, 2], [4, 2, 2]];
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
-    //gameLogic.printDelta(move[2].set.value);
-    //gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 1}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 1}}}];
-    //console.log(angular.equals(move, expectedMove));
     expect(angular.equals(move, expectedMove)).toBe(true);
   });
 
@@ -119,8 +108,6 @@ describe("aiService", function() {
     boardAfterMove.sum[0][0] = 1;
     boardAfterMove.sumAllEdges = 1;
     let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
-    //gameLogic.printDelta(move[2].set.value);
-    //gameLogic.printBoard(move[1].set.value);
     let expectedMove = [{setTurn: {turnIndex : 1}},
       {set: {key: 'board', value: boardAfterMove}},
       {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 0}}}];
@@ -152,29 +139,7 @@ describe("aiService", function() {
     expect(angular.equals(move, [expectedMove])).toBe(true);
   }); */
 
-/*  it("X finds an immediate winning move", function() {
-    let move = aiService.createComputerMove(
-        [['', '', 'O'],
-         ['O', 'X', 'X'],
-         ['O', 'X', 'O']], 0, {maxDepth: 1});
-    let expectedMove =
-        [{endMatch: {endMatchScores: [1, 0]}},
-          {set: {key: 'board', value:
-              [['', 'X', 'O'],
-               ['O', 'X', 'X'],
-               ['O', 'X', 'O']]}},
-          {set: {key: 'delta', value: {row: 0, col: 1}}}];
-    expect(angular.equals(move, expectedMove)).toBe(true);
-  });
-
-  it("O finds an immediate winning move", function() {
-    let move = aiService.createComputerMove(
-        [['', '', 'O'],
-         ['O', 'X', 'X'],
-         ['O', 'X', 'O']], 1, {maxDepth: 1});
-    expect(angular.equals(move[2].set.value, {row: 0, col: 0})).toBe(true);
-  });
-
+/*
   it("X prevents an immediate win", function() {
     let move = aiService.createComputerMove(
         [['X', '', ''],

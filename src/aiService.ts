@@ -11,6 +11,13 @@ module aiService {
   /** helper function to check which edges of a cell are filled and which are not*/
   //function emptyEdge(row: number, col: number): {}
 
+  function printPossibleMoves(possibleMoves: IMove[]):void { //helper function
+    let output: string = "";
+    for (var i = 0; i < possibleMoves.length; ++i) {
+      output = ", " + output + possibleMoves[i][2].set.value.dir + ":" + possibleMoves[i][2].set.value.row + "x" + possibleMoves[i][2].set.value.col;
+    }
+  }
+
   function stringifyTryMove(tryMove: BoardDelta): string {
     return "dir:"+tryMove.dir+"row:"+tryMove.row+"col:"+tryMove.col;
   }
@@ -73,10 +80,8 @@ module aiService {
     //      }
     //    }
     //  }
-
-
-     for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-       for (var j = 0; j < gameLogic.COLSIZE; j++) {
+    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+      for (var j = 0; j < gameLogic.COLSIZE; j++) {
          if (board.sum[i][j] === 3) {
           //  console.log("candidate for l3: " + i + ", " + j);
            tryAddPossibleMove(board, {'dir': 'hor', 'row': i, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
@@ -86,7 +91,9 @@ module aiService {
          }
        }
      }
-    //  console.log("L3 moves ", possibleMoves.length);
+     if (possibleMoves.length >= 1) {
+       return possibleMoves;
+     }
      for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
        for (var j = 0; j < gameLogic.COLSIZE; j++) {
          if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
@@ -98,7 +105,10 @@ module aiService {
        }
      }
     // console.log("L01 moves ", possibleMoves.length);
-     for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
+    if (possibleMoves.length >= 1) {
+      return possibleMoves;
+    }
+    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
        for (var j = 0; j < gameLogic.COLSIZE; j++) {
          if (board.sum[i][j] === 2){
            tryAddPossibleMove(board, {dir: 'hor', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
@@ -109,9 +119,10 @@ module aiService {
        }
      }
     //  console.log("L2 moves ", possibleMoves.length);
-
+    if (possibleMoves.length >= 1) {
+      return possibleMoves;
+    }
     //console.log("size of possible moves = " + addedMoves.length);
-    return possibleMoves;
   }
 
   /**
