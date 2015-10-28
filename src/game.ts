@@ -4,7 +4,14 @@ module game {
   var isComputerTurn = false;
   var state: IState = null;
   var turnIndex: number = null;
+  var RANGE: number = 6;
   export var isHelpModalShown: boolean = false;
+
+  interface GridElem {
+    dir: string;
+    row?: number;
+    col?: number;
+  }
 
   export function init() {
     console.log("Translation of 'RULES_OF_DOTS_AND_BOXES' are " + translate('RULES_OF_DOTS_AND_BOXES'));
@@ -67,11 +74,44 @@ module game {
     }
   }
 
-  export function cellClicked(dir: string, row: number, col: number): void {
+  export function cellClicked(row: number, col: number): void {
     log.info(["Clicked on cell:", row, col]);
     if (window.location.search === '?throwException') { // to test encoding a stack trace with sourcemap
       throw new Error("Throwing the error because URL has '?throwException'");
     }
+    let elem = translateToGridElem(row, col);
+    if (elem.dir === "") {
+      log.info ("Clicked on non-action part");
+    } else {
+      cellClickedImpl(elem.dir, elem.row, elem.col);
+    }
+  }
+
+  function translateToGridElem(row: number, col: number): GridElem {
+    let elem = <GridElem>{};
+    if ( (row + col) % 2 == 0) {
+      elem.dir = "";
+    } else if (row % 2 == 0) {
+      elem.dir = "hor";
+      elem.row = Math.floor(row/2);
+      elem.col = Math.floor(col/2);
+    } else {
+      elem.dir = "ver";
+      elem.row = Math.floor(row/2);
+      elem.col = Math.floor(col/2);
+    }
+    return elem;
+
+  }
+  function getDir(row: number, col: number): string {
+    if ( (row + col) % 2 == 0) {
+      return "";
+    } else if (row % 2 == 0) {
+      return ""
+    }
+  }
+
+  function cellClickedImpl(dir: string, row: number, col: number): void {
     if (!canMakeMove) {
       return;
     }
@@ -103,10 +143,14 @@ module game {
         state.delta &&
         state.delta.row === row && state.delta.col === col;
   }
+
+  export function divideByTwoThenFloor(row: number): number {
+    return Math.floor(row/2);
+  }
 }
 
-angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
-  .run(['initGameServices', function (initGameServices: any) {
+angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
+  .run(function () {
   $rootScope['game'] = game;
   translate.setLanguage('en',  {
     RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
@@ -115,4 +159,4 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap'])
     CLOSE: "Close"
   });
   game.init();
-}]);
+});

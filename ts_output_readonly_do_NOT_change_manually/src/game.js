@@ -5,6 +5,7 @@ var game;
     var isComputerTurn = false;
     var state = null;
     var turnIndex = null;
+    var RANGE = 6;
     game.isHelpModalShown = false;
     function init() {
         console.log("Translation of 'RULES_OF_DOTS_AND_BOXES' are " + translate('RULES_OF_DOTS_AND_BOXES'));
@@ -61,11 +62,46 @@ var game;
             }
         }
     }
-    function cellClicked(dir, row, col) {
+    function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
         }
+        var elem = translateToGridElem(row, col);
+        if (elem.dir === "") {
+            log.info("Clicked on non-action part");
+        }
+        else {
+            cellClickedImpl(elem.dir, elem.row, elem.col);
+        }
+    }
+    game.cellClicked = cellClicked;
+    function translateToGridElem(row, col) {
+        var elem = {};
+        if ((row + col) % 2 == 0) {
+            elem.dir = "";
+        }
+        else if (row % 2 == 0) {
+            elem.dir = "hor";
+            elem.row = Math.floor(row / 2);
+            elem.col = Math.floor(col / 2);
+        }
+        else {
+            elem.dir = "ver";
+            elem.row = Math.floor(row / 2);
+            elem.col = Math.floor(col / 2);
+        }
+        return elem;
+    }
+    function getDir(row, col) {
+        if ((row + col) % 2 == 0) {
+            return "";
+        }
+        else if (row % 2 == 0) {
+            return "";
+        }
+    }
+    function cellClickedImpl(dir, row, col) {
         if (!canMakeMove) {
             return;
         }
@@ -79,7 +115,6 @@ var game;
             return;
         }
     }
-    game.cellClicked = cellClicked;
     function shouldShowImage(row, col) {
         var cell = state.board.color[row][col];
         return cell !== "";
@@ -99,15 +134,19 @@ var game;
             state.delta.row === row && state.delta.col === col;
     }
     game.shouldSlowlyAppear = shouldSlowlyAppear;
+    function divideByTwoThenFloor(row) {
+        return Math.floor(row / 2);
+    }
+    game.divideByTwoThenFloor = divideByTwoThenFloor;
 })(game || (game = {}));
 angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
-    .run(['initGameServices', function (initGameServices) {
-        $rootScope['game'] = game;
-        translate.setLanguage('en', {
-            RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
-            RULES_SLIDE1: "You and your opponent take turns to mark one empty edge but cannot complete a cell.",
-            RULES_SLIDE2: "Whoever completes a cell earn one score. When all edges are filled, the player with higher score wins",
-            CLOSE: "Close"
-        });
-        game.init();
-    }]);
+    .run(function () {
+    $rootScope['game'] = game;
+    translate.setLanguage('en', {
+        RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
+        RULES_SLIDE1: "You and your opponent take turns to mark one empty edge but cannot complete a cell.",
+        RULES_SLIDE2: "Whoever completes a cell earn one score. When all edges are filled, the player with higher score wins",
+        CLOSE: "Close"
+    });
+    game.init();
+});

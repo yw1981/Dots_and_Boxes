@@ -38,6 +38,8 @@
   <link rel="stylesheet" type="text/css" href="http://yoav-zibin.github.io/emulator/main.css">
   <link rel="stylesheet" type="text/css" href="game.css">
 </head>
+
+<!--
 <body ng-cloak>
   <div style="position:absolute; bottom:5px; left: 5px; z-index:10;">
     <span ng-click="game.isHelpModalShown = true"
@@ -90,41 +92,24 @@
       </div>
     </div>
   </div>
+-->
 
-<div id="gameArea">
 
-  <div ng-repeat="row in [0, 1, 2]"
-      style="position:absolute; top:{{row * 33}}%; left:0; width:100%; height:33%;">
-    <div ng-repeat="col in [0, 1, 2]"
-        style="position:absolute; top:0; left:{{col * 33}}%; width:33%; height:100%;"
-        ng-class="{r: col < 2, b: row < 2}"
-        ng-click="game.cellClicked(row, col)"
-        id="{{'e2e_test_div_' + row + 'x' + col}}">
-      <div style="width:100%; height: 100%"
-          ng-class="{slowlyAppear: game.shouldSlowlyAppear(row, col)}"
-          ng-show="game.shouldShowImage(row, col)">
-        <svg ng-show="game.isPieceO(row, col)"
-            id="{{'e2e_test_pieceO_' + row + 'x' + col}}"
-            width="100%" height="100%">
-          <circle cx="50%" cy="50%" r="27%"
-            stroke="blue" stroke-width="5%" fill="white" />
-        </svg>
-        <svg ng-show="game.isPieceX(row, col)"
-            id="{{'e2e_test_pieceX_' + row + 'x' + col}}"
-            width="100%" height="100%">
-          <line x1="25%" y1="25%"
-                x2="75%" y2="75%"
-                stroke="red"
-                stroke-width="5%"/>
-          <line x1="25%" y1="75%"
-                x2="75%" y2="25%"
-                stroke="red"
-                stroke-width="5%"/>
-        </svg>
-      </div>
+<div id="gameArea" style="width:300px; height:300px; border: 5px solid">
+    <rect width="100%" height="100%" style="fill:rgb(250,250,250)"/>
+    <div ng-repeat="row in [0, 1, 2, 3, 4, 5, 6]"
+         style="position:absolute; left:0; width:100%; top:{{game.divideByTwoThenFloor(row)*31.25 + (row%2)*6.25 }}%; height:{{((row+1)%2)*6.25+(row%2)*25}}%">
+         <div ng-repeat="col in [0, 1, 2, 3, 4, 5, 6]"
+              style="position:absolute; left:{{game.divideByTwoThenFloor(col)*31.25 + (col%2)*6.25 }}%; width:{{((col+1)%2)*6.25+(col%2)*25}}%; top:0; height:100%"
+              ng-click="game.cellClicked(row, col)">
+           <svg width="100%" height="100%">
+               <rect width="100%" height="100%" style="fill:rgb({{row*40}},{{col*40}},255)"/>
+           </svg>
+         </div>
     </div>
-  </div>
 </div>
+
+
 
 </body>
 </html>
