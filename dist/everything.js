@@ -476,7 +476,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     //function emptyEdge(row: number, col: number): {}
     function printPossibleMoves(possibleMoves) {
         var output = "possible moves:";
-        var sum = "corresponding cell sum: ";
         for (var i = 0; i < possibleMoves.length; ++i) {
             output = output + possibleMoves[i][2].set.value.dir + ":" + possibleMoves[i][2].set.value.row + "x" + possibleMoves[i][2].set.value.col + ",";
         }
