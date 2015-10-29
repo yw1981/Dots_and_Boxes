@@ -78,6 +78,7 @@ module game {
   }
 
   export function cellClicked(row: number, col: number): void {
+    canMakeMove = false; // to prevent making another move
     log.info(["Clicked on cell:", row, col]);
     if (!canMakeMove) return;
     if (window.location.search === '?throwException') { // to test encoding a stack trace with sourcemap
@@ -129,7 +130,7 @@ module game {
     }
     try {
       var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
-      canMakeMove = false; // to prevent making another move
+      //canMakeMove = false; // to prevent making another move
       gameService.makeMove(move);
     } catch (e) {
       log.info(["Cell is already full in position:", dir, row, col]);

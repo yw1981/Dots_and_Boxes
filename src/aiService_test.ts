@@ -74,30 +74,5 @@ describe("aiService", function() {
       {set: {key: 'delta', value: {dir: 'ver', row: 2, col: 1}}}];
     expect(angular.equals(move, expectedMove)).toBe(true);
   });
-
-  it("case4. there are only cells with sum 4 and 2 ", function() {
-    var board = gameLogic.getInitialBoard();
-    var boardBeforeMove = angular.copy(board);
-    boardBeforeMove.switchTurn = false;
-    boardBeforeMove.sumAllEdges = 17;
-    boardBeforeMove.score = [0, 3];
-    boardBeforeMove.hor = [[1, 0, 0], [1, 1, 1], [1, 0, 0], [1, 1, 1]];
-    boardBeforeMove.ver = [[1, 1, 0, 1], [1, 1, 0, 1], [1, 1, 0, 1]];
-    boardBeforeMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
-    boardBeforeMove.sum = [[4, 2, 2], [4, 2, 2], [4, 2, 2]];
-    var boardAfterMove = angular.copy(boardBeforeMove);
-    boardAfterMove.switchTurn = true;
-    boardAfterMove.sumAllEdges = 18;
-    boardAfterMove.score = [0, 3];
-    boardAfterMove.hor = [[1, 1, 0], [1, 1, 1], [1, 0, 0], [1, 1, 1]];
-    boardAfterMove.ver = [[1, 1, 0, 1], [1, 1, 0, 1], [1, 1, 0, 1]];
-    boardAfterMove.color = [['ME', '', ''], ['ME', '', ''], ['ME', '', '']];
-    boardAfterMove.sum = [[4, 3, 2], [4, 2, 2], [4, 2, 2]];
-    let move = aiService.createComputerMove(boardBeforeMove, 0, {millisecondsLimit: 1000});
-    let expectedMove = [{setTurn: {turnIndex : 1}},
-      {set: {key: 'board', value: boardAfterMove}},
-      {set: {key: 'delta', value: {dir: 'hor', row: 0, col: 1}}}];
-    expect(angular.equals(move, expectedMove)).toBe(true);
-  });
-
+  
 });

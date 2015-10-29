@@ -338,6 +338,8 @@ var gameLogic;
     }
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
+        if (!canMakeMove)
+            return;
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
         }
@@ -389,7 +391,7 @@ var gameLogic;
         }
         try {
             var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
-            canMakeMove = false; // to prevent making another move
+            //canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
         catch (e) {
