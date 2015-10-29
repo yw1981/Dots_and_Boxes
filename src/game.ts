@@ -3,8 +3,9 @@ module game {
   var canMakeMove = false;
   var isComputerTurn = false;
   var state: IState = null;
-  var turnIndex: number = null;
-  var RANGE: number = 6;
+  var lastUpdateUI: IUpdateUI = null;
+  // var turnIndex: number = null;
+  var RANGE: number  =6;
   export var isHelpModalShown: boolean = false;
 
   interface GridElem {
@@ -39,22 +40,24 @@ module game {
     });
   }
 
-  function sendComputerMove() {
-    gameService.makeMove(
-        aiService.createComputerMove(state.board, turnIndex,
-          // at most 1 second for the AI to choose a move (but might be much quicker)
-          {millisecondsLimit: 1000}));
+  function sendComputerMove(): void {
+    // gameService.makeMove(
+    //     aiService.createComputerMove(state.board, turnIndex,
+    //       // at most 1 second for the AI to choose a move (but might be much quicker)
+    //       {millisecondsLimit: 1000}));
+    gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
   }
 
   function updateUI(params: IUpdateUI): void {
     animationEnded = false;
+    lastUpdateUI = params;
     state = params.stateAfterMove;
     if (!state.board) {
       state.board = gameLogic.getInitialBoard();
     }
     canMakeMove = params.turnIndexAfterMove >= 0 && // game is ongoing
       params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
-    turnIndex = params.turnIndexAfterMove;
+    // turnIndex = params.turnIndexAfterMove;
 
     // Is it the computer's turn?
     isComputerTurn = canMakeMove &&
@@ -124,7 +127,7 @@ module game {
       return;
     }
     try {
-      var move = gameLogic.createMove(state.board, dir, row, col, turnIndex);
+      var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
       canMakeMove = false; // to prevent making another move
       gameService.makeMove(move);
     } catch (e) {
@@ -134,7 +137,11 @@ module game {
   }
 
   export function shouldShowImage(row: number, col: number): boolean { //may also add shouldShowEdge function later
-    var cell = state.board.color[row][col];
+    var elem = translateToGridElem (row, col);
+    var cell = "";
+    if (elem.dir === "cell") {
+      cell = state.board.color[row][col];
+    }
     return cell !== "";
   }
 
@@ -168,9 +175,12 @@ module game {
   }
 
   export function shouldSlowlyAppear(row: number, col: number): boolean {
+    var elem = translateToGridElem (row, col);
     return !animationEnded &&
         state.delta &&
-        state.delta.row === row && state.delta.col === col;
+        state.delta.row === elem.row &&
+        state.delta.col === elem.col &&
+        state.delta.dir === elem.dir;
   }
 
   export function divideByTwoThenFloor(row: number): number {

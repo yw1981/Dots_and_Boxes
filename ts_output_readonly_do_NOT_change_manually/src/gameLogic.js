@@ -122,6 +122,7 @@ var gameLogic;
             if (row !== 0) {
                 boardAfterMove.sum[row - 1][col] += 1;
                 if (boardAfterMove.sum[row - 1][col] === 4) {
+                    console.log("set switchTurn to false");
                     boardAfterMove.switchTurn = false;
                     if (turnIndexBeforeMove === 0) {
                         boardAfterMove.color[row - 1][col] = 'YOU';
@@ -136,6 +137,7 @@ var gameLogic;
             if (row !== gameLogic.ROWSIZE) {
                 boardAfterMove.sum[row][col] += 1; // check lower cell's sum
                 if (boardAfterMove.sum[row][col] === 4) {
+                    console.log("set switchTurn to false");
                     boardAfterMove.switchTurn = false;
                     if (turnIndexBeforeMove === 0) {
                         boardAfterMove.color[row][col] = 'YOU';
@@ -153,6 +155,7 @@ var gameLogic;
             if (col !== 0) {
                 boardAfterMove.sum[row][col - 1] += 1;
                 if (boardAfterMove.sum[row][col - 1] === 4) {
+                    console.log("set switchTurn to false");
                     boardAfterMove.switchTurn = false;
                     if (turnIndexBeforeMove === 0) {
                         boardAfterMove.color[row][col - 1] = 'YOU';
@@ -167,6 +170,7 @@ var gameLogic;
             if (col !== gameLogic.COLSIZE) {
                 boardAfterMove.sum[row][col] += 1;
                 if (boardAfterMove.sum[row][col] === 4) {
+                    console.log("set switchTurn to false");
                     boardAfterMove.switchTurn = false;
                     if (turnIndexBeforeMove === 0) {
                         boardAfterMove.color[row][col] = 'YOU';

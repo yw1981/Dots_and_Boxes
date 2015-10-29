@@ -270,7 +270,8 @@ var gameLogic;
     var canMakeMove = false;
     var isComputerTurn = false;
     var state = null;
-    var turnIndex = null;
+    var lastUpdateUI = null;
+    // var turnIndex: number = null;
     var RANGE = 6;
     game.isHelpModalShown = false;
     function init() {
@@ -298,19 +299,22 @@ var gameLogic;
         });
     }
     function sendComputerMove() {
-        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex, 
-        // at most 1 second for the AI to choose a move (but might be much quicker)
-        { millisecondsLimit: 1000 }));
+        // gameService.makeMove(
+        //     aiService.createComputerMove(state.board, turnIndex,
+        //       // at most 1 second for the AI to choose a move (but might be much quicker)
+        //       {millisecondsLimit: 1000}));
+        gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
     }
     function updateUI(params) {
         animationEnded = false;
+        lastUpdateUI = params;
         state = params.stateAfterMove;
         if (!state.board) {
             state.board = gameLogic.getInitialBoard();
         }
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
-        turnIndex = params.turnIndexAfterMove;
+        // turnIndex = params.turnIndexAfterMove;
         // Is it the computer's turn?
         isComputerTurn = canMakeMove &&
             params.playersInfo[params.yourPlayerIndex].playerId === '';
@@ -380,7 +384,7 @@ var gameLogic;
             return;
         }
         try {
-            var move = gameLogic.createMove(state.board, dir, row, col, turnIndex);
+            var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
             canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
@@ -390,7 +394,11 @@ var gameLogic;
         }
     }
     function shouldShowImage(row, col) {
-        var cell = state.board.color[row][col];
+        var elem = translateToGridElem(row, col);
+        var cell = "";
+        if (elem.dir === "cell") {
+            cell = state.board.color[row][col];
+        }
         return cell !== "";
     }
     game.shouldShowImage = shouldShowImage;
@@ -427,9 +435,12 @@ var gameLogic;
     }
     game.isCellFilled_Player1 = isCellFilled_Player1;
     function shouldSlowlyAppear(row, col) {
+        var elem = translateToGridElem(row, col);
         return !animationEnded &&
             state.delta &&
-            state.delta.row === row && state.delta.col === col;
+            state.delta.row === elem.row &&
+            state.delta.col === elem.col &&
+            state.delta.dir === elem.dir;
     }
     game.shouldSlowlyAppear = shouldSlowlyAppear;
     function divideByTwoThenFloor(row) {
@@ -442,8 +453,8 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     $rootScope['game'] = game;
     translate.setLanguage('en', {
         RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
-        RULES_SLIDE1: "You and your opponent take turns to mark one empty edge but cannot complete a cell.",
-        RULES_SLIDE2: "Whoever completes a cell earn one score. When all edges are filled, the player with higher score wins",
+        RULES_SLIDE1: "Starting with an empty grid of edges and cells.\n One player fills an empty horizontal or vertical edge.\n Players switch turns if did not complete a cell.",
+        RULES_SLIDE2: "A player who completes the fourth side of a cell earns one point and takes another turn.\n When all the cells are filled, whoever earns the higher score wins.",
         CLOSE: "Close"
     });
     game.init();

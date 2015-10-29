@@ -142,6 +142,7 @@ module gameLogic {
       if (row !== 0) { //if not any cell on top line, check upper cell's sum
         boardAfterMove.sum[row-1][col] += 1;
         if (boardAfterMove.sum[row-1][col] === 4) {
+          console.log("set switchTurn to false");
           boardAfterMove.switchTurn = false;
           if (turnIndexBeforeMove === 0) {
             boardAfterMove.color[row-1][col] = 'YOU';
@@ -156,6 +157,7 @@ module gameLogic {
       if (row !== ROWSIZE) {
         boardAfterMove.sum[row][col] += 1; // check lower cell's sum
         if (boardAfterMove.sum[row][col] === 4) {
+          console.log("set switchTurn to false");
           boardAfterMove.switchTurn = false;
           if (turnIndexBeforeMove === 0) {
             boardAfterMove.color[row][col] = 'YOU';
@@ -174,6 +176,7 @@ module gameLogic {
       if (col !== 0) {
         boardAfterMove.sum[row][col-1] += 1;
         if (boardAfterMove.sum[row][col-1] === 4) {
+          console.log("set switchTurn to false");
           boardAfterMove.switchTurn = false;
           if (turnIndexBeforeMove === 0) {
             boardAfterMove.color[row][col-1] = 'YOU';
@@ -188,6 +191,7 @@ module gameLogic {
      if (col !== COLSIZE) {
         boardAfterMove.sum[row][col] += 1;
         if (boardAfterMove.sum[row][col] === 4) {
+          console.log("set switchTurn to false");
           boardAfterMove.switchTurn = false;
           if (turnIndexBeforeMove === 0) {
             boardAfterMove.color[row][col] = 'YOU';

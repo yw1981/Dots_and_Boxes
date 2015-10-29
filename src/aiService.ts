@@ -92,6 +92,7 @@ module aiService {
        }
      }
      if (possibleMoves.length >= 1) {
+       //console.log("L03 moves ", possibleMoves.length);
        return possibleMoves;
      }
      for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
@@ -104,7 +105,7 @@ module aiService {
          }
        }
      }
-    // console.log("L01 moves ", possibleMoves.length);
+    // // console.log("L01 moves ", possibleMoves.length);
     if (possibleMoves.length >= 1) {
       return possibleMoves;
     }
@@ -118,10 +119,12 @@ module aiService {
          }
        }
      }
-    //  console.log("L2 moves ", possibleMoves.length);
+    // //  console.log("L2 moves ", possibleMoves.length);
     if (possibleMoves.length >= 1) {
       return possibleMoves;
     }
+
+    return possibleMoves;
     //console.log("size of possible moves = " + addedMoves.length);
   }
 
@@ -138,13 +141,18 @@ module aiService {
     // 0) endMatch or setTurn
     // 1) {set: {key: 'board', value: ...}}
     // 2) {set: {key: 'delta', value: ...}}]
-    var move = alphaBetaService.alphaBetaDecision(
-        [null, {set: {key: 'board', value: board}}],
-        playerIndex, getNextStates, getStateScoreForIndex0,
-        // If you want to see debugging output in the console, then surf to index.html?debug
-        window.location.search === '?debug' ? getDebugStateToString : null,
-        alphaBetaLimits);
-    return move;
+    // var move = alphaBetaService.alphaBetaDecision(
+    //     [null, {set: {key: 'board', value: board}}],
+    //     playerIndex, getNextStates, getStateScoreForIndex0,
+    //     // If you want to see debugging output in the console, then surf to index.html?debug
+    //     window.location.search === '?debug' ? getDebugStateToString : null,
+    //     alphaBetaLimits);
+
+    // choices are filetered at get possible move time.
+    // random select among good choices is not bad
+    var moves:IMove[] = getPossibleMoves(board, playerIndex);
+    var random = Math.floor(moves.length * Math.random())
+    return moves[random];
   }
 
   function getStateScoreForIndex0(move: IMove, playerIndex: number): number {

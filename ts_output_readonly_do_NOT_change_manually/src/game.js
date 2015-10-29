@@ -4,7 +4,8 @@ var game;
     var canMakeMove = false;
     var isComputerTurn = false;
     var state = null;
-    var turnIndex = null;
+    var lastUpdateUI = null;
+    // var turnIndex: number = null;
     var RANGE = 6;
     game.isHelpModalShown = false;
     function init() {
@@ -32,19 +33,22 @@ var game;
         });
     }
     function sendComputerMove() {
-        gameService.makeMove(aiService.createComputerMove(state.board, turnIndex, 
-        // at most 1 second for the AI to choose a move (but might be much quicker)
-        { millisecondsLimit: 1000 }));
+        // gameService.makeMove(
+        //     aiService.createComputerMove(state.board, turnIndex,
+        //       // at most 1 second for the AI to choose a move (but might be much quicker)
+        //       {millisecondsLimit: 1000}));
+        gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
     }
     function updateUI(params) {
         animationEnded = false;
+        lastUpdateUI = params;
         state = params.stateAfterMove;
         if (!state.board) {
             state.board = gameLogic.getInitialBoard();
         }
         canMakeMove = params.turnIndexAfterMove >= 0 &&
             params.yourPlayerIndex === params.turnIndexAfterMove; // it's my turn
-        turnIndex = params.turnIndexAfterMove;
+        // turnIndex = params.turnIndexAfterMove;
         // Is it the computer's turn?
         isComputerTurn = canMakeMove &&
             params.playersInfo[params.yourPlayerIndex].playerId === '';
@@ -114,7 +118,7 @@ var game;
             return;
         }
         try {
-            var move = gameLogic.createMove(state.board, dir, row, col, turnIndex);
+            var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
             canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
@@ -124,7 +128,11 @@ var game;
         }
     }
     function shouldShowImage(row, col) {
-        var cell = state.board.color[row][col];
+        var elem = translateToGridElem(row, col);
+        var cell = "";
+        if (elem.dir === "cell") {
+            cell = state.board.color[row][col];
+        }
         return cell !== "";
     }
     game.shouldShowImage = shouldShowImage;
@@ -161,9 +169,12 @@ var game;
     }
     game.isCellFilled_Player1 = isCellFilled_Player1;
     function shouldSlowlyAppear(row, col) {
+        var elem = translateToGridElem(row, col);
         return !animationEnded &&
             state.delta &&
-            state.delta.row === row && state.delta.col === col;
+            state.delta.row === elem.row &&
+            state.delta.col === elem.col &&
+            state.delta.dir === elem.dir;
     }
     game.shouldSlowlyAppear = shouldSlowlyAppear;
     function divideByTwoThenFloor(row) {
