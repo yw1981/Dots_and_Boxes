@@ -135,6 +135,7 @@ module gameLogic {
 
 
   export function updateBoard(board: Board, dir: string, row: number, col: number, turnIndexBeforeMove: number):Board {
+    board.switchTurn = true;
     var boardAfterMove = angular.copy(board);
     if (dir === 'hor') {
       boardAfterMove.hor[row][col] = 1;
@@ -179,7 +180,7 @@ module gameLogic {
             boardAfterMove.score[0]++;
           }
           else {
-            boardAfterMove.color[row-1][col] = 'ME';
+            boardAfterMove.color[row][col-1] = 'ME';
             boardAfterMove.score[1]++;
           }
         }

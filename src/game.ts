@@ -80,17 +80,23 @@ module game {
       throw new Error("Throwing the error because URL has '?throwException'");
     }
     let elem = translateToGridElem(row, col);
-    if (elem.dir === "") {
+    if (elem.dir !== "hor" && elem.dir !== "ver") {
       log.info ("Clicked on non-action part");
     } else {
+      log.info(elem.dir, elem.row, elem.col);
+      gameLogic.printBoard(state.board);
       cellClickedImpl(elem.dir, elem.row, elem.col);
     }
   }
 
   function translateToGridElem(row: number, col: number): GridElem {
     let elem = <GridElem>{};
-    if ( (row + col) % 2 == 0) {
-      elem.dir = "";
+    if ( row % 2 == 0 && col % 2 == 0) {
+      elem.dir = "corner";
+    } else if ( row % 2 == 1 && col % 2 == 1 ) {
+      elem.dir = "cell";
+      elem.row = Math.floor(row/2);
+      elem.col = Math.floor(col/2);
     } else if (row % 2 == 0) {
       elem.dir = "hor";
       elem.row = Math.floor(row/2);
@@ -100,9 +106,11 @@ module game {
       elem.row = Math.floor(row/2);
       elem.col = Math.floor(col/2);
     }
+    //console.log("%o", elem);
     return elem;
-
   }
+
+
   function getDir(row: number, col: number): string {
     if ( (row + col) % 2 == 0) {
       return "";
@@ -130,12 +138,33 @@ module game {
     return cell !== "";
   }
 
-  export function isPieceX(row: number, col: number): boolean {
-    return state.board.color[row][col] === 'YOU';
+  export function isEdgeFilled(row: number, col: number):boolean {
+    var elem = translateToGridElem (row, col);
+    if (elem.dir==="hor") return state.board.hor[elem.row][elem.col]===1;
+    else if (elem.dir==="ver") return state.board.ver[elem.row][elem.col]===1;
+    else return false;
   }
 
-  export function isPieceO(row: number, col: number): boolean {
-    return state.board.color[row][col] === 'ME';
+  export function isCellFilled_Player0(row: number, col: number): boolean {
+    var elem = translateToGridElem (row, col);
+    if (elem.dir === "cell") {
+      if (state.board.color[elem.row][elem.col] === 'YOU'){
+        console.log(elem.dir, elem.row, elem.col);
+      }
+      return state.board.color[elem.row][elem.col] === 'YOU';
+    }
+    return false;
+  }
+
+  export function isCellFilled_Player1(row: number, col: number): boolean {
+    var elem = translateToGridElem (row, col);
+    if (elem.dir === "cell"){
+      if (state.board.color[elem.row][elem.col] === 'ME'){
+        console.log(elem.dir, elem.row, elem.col);
+      }
+      return state.board.color[elem.row][elem.col] === 'ME';
+    }
+    return false;
   }
 
   export function shouldSlowlyAppear(row: number, col: number): boolean {

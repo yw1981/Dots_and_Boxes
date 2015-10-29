@@ -1,8 +1,20 @@
-.r {
-  border-right: 4pt solid black;
+.edge {
+  background: #00CC66; //green
+  border: 1px solid #959595;
 }
-.b {
-  border-bottom: 4pt solid black;
+.cell_player0 {
+  background: #ff8000; //orange
+  border: 1px solid #959595;
+}
+
+.cell_player1 {
+  background: #0099ff; //blue
+  border: 1px solid #959595;
+}
+
+.corner {
+  background: #9999FF; //purple
+  border: 1px solid #959595;
 }
 
 .slowlyAppear {

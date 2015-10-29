@@ -115,6 +115,7 @@ var gameLogic;
      * Returns an empty array if the game is over.
      */
     function updateBoard(board, dir, row, col, turnIndexBeforeMove) {
+        board.switchTurn = true;
         var boardAfterMove = angular.copy(board);
         if (dir === 'hor') {
             boardAfterMove.hor[row][col] = 1;
@@ -158,7 +159,7 @@ var gameLogic;
                         boardAfterMove.score[0]++;
                     }
                     else {
-                        boardAfterMove.color[row - 1][col] = 'ME';
+                        boardAfterMove.color[row][col - 1] = 'ME';
                         boardAfterMove.score[1]++;
                     }
                 }

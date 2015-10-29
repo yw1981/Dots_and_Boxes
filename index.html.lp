@@ -39,6 +39,7 @@
   <link rel="stylesheet" type="text/css" href="game.css">
 </head>
 
+<!--
 <body ng-cloak>
   <div style="position:absolute; bottom:5px; left: 5px; z-index:10;">
     <span ng-click="game.isHelpModalShown = true"
@@ -52,7 +53,7 @@
         <div class="modal-header">
           <button type="button" class="close" ng-click="game.isHelpModalShown = false" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title" id="myModalLabel">
-            {{ 'RULES_OF_DOTS_AND_BOXES' | translate }}
+            {{ 'RULES_OF_Dots_and_Boxes' | translate }}
           </h4>
         </div>
         <div class="modal-body">
@@ -91,29 +92,27 @@
       </div>
     </div>
   </div>
+-->
+
 
 <div id="gameArea" style="width:300px; height:300px; border: 5px solid">
-    <rect width="100%" height="100%" style="fill:#CCCCFF"/>
+    <rect width="100%" height="100%" style="fill:rgb(250,250,250)"/>
     <div ng-repeat="row in [0, 1, 2, 3, 4, 5, 6]"
          style="position:absolute; left:0; width:100%; top:{{game.divideByTwoThenFloor(row)*31.25 + (row%2)*6.25 }}%; height:{{((row+1)%2)*6.25+(row%2)*25}}%">
          <div ng-repeat="col in [0, 1, 2, 3, 4, 5, 6]"
               style="position:absolute; left:{{game.divideByTwoThenFloor(col)*31.25 + (col%2)*6.25 }}%; width:{{((col+1)%2)*6.25+(col%2)*25}}%; top:0; height:100%"
               ng-class="{corner: (row%2==0)&&(col%2==0)}"
               ng-click="game.cellClicked(row, col)">
-           <div style="width:100%; height: 100%"
-                ng-if="game.isEdgeFilled(row, col)"
-                ng-class="{edge: true}">
+           <div ng-if="{{(row+col)%2}}" style="width:100%; height: 100%"
+                ng-class="{edge: (row+col)%2==1}">
            </div>
-           <div style="width:100%; height: 100%"
-                ng-if="game.isCellFilled_Player0(row, col)"
-                ng-class="{cell_player0:true}">
+           <div ng-if="game.isPlayer0(row, col)" width="100%" height="100%"
+                ng-class="{cell_player0: (row%2==1)&&(col%2==1)}">
            </div>
-           <div style="width:100%; height: 100%"
-                ng-if="game.isCellFilled_Player1(row, col)"
-                ng-class="{cell_player1: true}">
+           <div ng-if="game.isPlayer1(row, col)" width="100%" height="100%"
+                ng-class="{cell_player1: (row%2==1)&&(col%2==1)}">
            </div>
-
-        </div>
+         </div>
     </div>
 </div>
 
