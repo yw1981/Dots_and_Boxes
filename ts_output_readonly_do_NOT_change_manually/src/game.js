@@ -68,6 +68,8 @@ var game;
     }
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
+        if (!canMakeMove)
+            return;
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
         }
