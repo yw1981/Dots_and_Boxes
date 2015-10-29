@@ -176,8 +176,8 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     $rootScope['game'] = game;
     translate.setLanguage('en', {
         RULES_OF_DOTS_AND_BOXES: "Rules of Dots_and_Boxes",
-        RULES_SLIDE1: "You and your opponent take turns to mark one empty edge but cannot complete a cell.",
-        RULES_SLIDE2: "Whoever completes a cell earn one score. When all edges are filled, the player with higher score wins",
+        RULES_SLIDE1: "Starting with an empty grid of edges and cells.\n One player fills an empty horizontal or vertical edge.\n Players switch turns if did not complete a cell.",
+        RULES_SLIDE2: "A player who completes the fourth side of a cell earns one point and takes another turn.\n When all the cells are filled, whoever earns the higher score wins.",
         CLOSE: "Close"
     });
     game.init();
