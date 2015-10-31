@@ -148,6 +148,11 @@ var game;
             return false;
     }
     game.isEdgeFilled = isEdgeFilled;
+    function isNewlyFilledEdge(row, col) {
+        var elem = translateToGridElem(row, col);
+        return angular.equals(elem, state.delta);
+    }
+    game.isNewlyFilledEdge = isNewlyFilledEdge;
     function isCellFilled_Player0(row, col) {
         var elem = translateToGridElem(row, col);
         if (elem.dir === "cell") {

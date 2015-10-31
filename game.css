@@ -1,7 +1,31 @@
 .edge {
   background: #9999FF; //light purple
   border: 1px solid #959595;
+  /*-webkit-animation-name: highlight_last_move; Chrome, Safari, Opera */
+  /*-webkit-animation-duration: 1s; Chrome, Safari, Opera */
+  animation-name: highlight_last_move;
+  animation-duration: 1s;
 }
+
+.edge_new {
+  background: #FF6600; //dark orange
+  border: 1px solid #959595;
+  /*-webkit-animation-name: highlight_last_move; Chrome, Safari, Opera */
+  /*-webkit-animation-duration: 1s; Chrome, Safari, Opera */
+  animation-name: highlight_last_move_new;
+  animation-duration: 1s;
+}
+
+@keyframes highlight_last_move {
+    from {background-color: yellow;}
+    to {background-color: #9999FF;}
+}
+
+@keyframes highlight_last_move_new {
+    from {background-color: yellow;}
+    to {background-color: #FF6600;}
+}
+
 .cell_player0 {
   background: #ff9933; //orange
   border: 1px solid #959595;

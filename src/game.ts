@@ -153,6 +153,11 @@ module game {
     else return false;
   }
 
+  export function isNewlyFilledEdge(row: number, col: number ): boolean {
+    var elem = translateToGridElem (row, col);
+    return angular.equals(elem, state.delta);
+  }
+
   export function isCellFilled_Player0(row: number, col: number): boolean {
     var elem = translateToGridElem (row, col);
     if (elem.dir === "cell") {
