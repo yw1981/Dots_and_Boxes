@@ -336,6 +336,10 @@ var gameLogic;
             }
         }
     }
+    function getScore(playerIndex) {
+        return state.board.score[playerIndex];
+    }
+    game.getScore = getScore;
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
         if (!canMakeMove)
@@ -390,8 +394,8 @@ var gameLogic;
             return;
         }
         try {
+            canMakeMove = false; // to prevent making another move
             var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
-            //canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
         catch (e) {

@@ -41,8 +41,16 @@
 
 <body ng-cloak>
   <div style="position:absolute; bottom:5px; left: 5px; z-index:10;">
+    <table>
+      <tr>
+        <td>{{game.getScore(0)}}</td>
+        <td>:</td>
+        <td>{{game.getScore(1)}}</td>
+      </tr>
+    </table>
     <span ng-click="game.isHelpModalShown = true"
         class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+
   </div>
 
   <div class="overlayModal" ng-class="{zeroOpacity: !game.isHelpModalShown, oneOpacity: game.isHelpModalShown}" aria-hidden="true">
@@ -118,8 +126,6 @@
         </div>
     </div>
 </div>
-
-
 
 </body>
 </html>

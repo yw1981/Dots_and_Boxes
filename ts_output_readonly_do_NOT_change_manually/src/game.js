@@ -66,6 +66,10 @@ var game;
             }
         }
     }
+    function getScore(playerIndex) {
+        return state.board.score[playerIndex];
+    }
+    game.getScore = getScore;
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
         if (!canMakeMove)

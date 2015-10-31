@@ -77,6 +77,10 @@ module game {
     }
   }
 
+  export function getScore (playerIndex: number): number {
+    return state.board.score[playerIndex];
+  }
+
   export function cellClicked(row: number, col: number): void {
     log.info(["Clicked on cell:", row, col]);
     if (!canMakeMove) return;
