@@ -295,11 +295,12 @@ var gameLogic;
     game.init = init;
     function animationEndedCallback() {
         $rootScope.$apply(function () {
-            log.info("Animation ended");
+            log.info("Animation ended - start callback");
             animationEnded = true;
             if (isComputerTurn) {
                 sendComputerMove();
             }
+            log.info("Animation ended - end callback");
         });
     }
     function sendComputerMove() {
@@ -307,7 +308,11 @@ var gameLogic;
         //     aiService.createComputerMove(state.board, turnIndex,
         //       // at most 1 second for the AI to choose a move (but might be much quicker)
         //       {millisecondsLimit: 1000}));
+        log.info("sendComputerMove");
+        // log.info("explicitly call udpate UI");
+        // updateUI(lastUpdateUI);
         gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
+        log.info("sendComputerMove..DONE");
     }
     function updateUI(params) {
         log.info("calling updateUI..");
@@ -333,9 +338,11 @@ var gameLogic;
                 // This is the first move in the match, so
                 // there is not going to be an animation, so
                 // call sendComputerMove() now (can happen in ?onlyAIs mode)
+                log.info("this should be called only once");
                 sendComputerMove();
             }
         }
+        log.info("calling updateUI..DONE");
     }
     function getScore(playerIndex) {
         return state.board.score[playerIndex];
@@ -343,8 +350,10 @@ var gameLogic;
     game.getScore = getScore;
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
-        if (!canMakeMove)
+        if (!canMakeMove) {
+            log.info("cannot make move now!");
             return;
+        }
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
         }
@@ -353,7 +362,7 @@ var gameLogic;
             log.info("Clicked on non-action part");
         }
         else {
-            log.info(elem.dir, elem.row, elem.col);
+            //log.info(elem.dir, elem.row, elem.col);
             //gameLogic.printBoard(state.board);
             cellClickedImpl(elem.dir, elem.row, elem.col);
         }
@@ -379,7 +388,6 @@ var gameLogic;
             elem.row = Math.floor(row / 2);
             elem.col = Math.floor(col / 2);
         }
-        //console.log("%o", elem);
         return elem;
     }
     function getDir(row, col) {
@@ -391,12 +399,9 @@ var gameLogic;
         }
     }
     function cellClickedImpl(dir, row, col) {
-        if (!canMakeMove) {
-            return;
-        }
         try {
-            canMakeMove = false; // to prevent making another move
             var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
+            canMakeMove = false; // to prevent making another move
             log.info("calling makeMove in cellClickedImpl");
             gameService.makeMove(move);
         }
@@ -432,9 +437,6 @@ var gameLogic;
     function isCellFilled_Player0(row, col) {
         var elem = translateToGridElem(row, col);
         if (elem.dir === "cell") {
-            if (state.board.color[elem.row][elem.col] === 'YOU') {
-                console.log(elem.dir, elem.row, elem.col);
-            }
             return state.board.color[elem.row][elem.col] === 'YOU';
         }
         return false;
@@ -443,9 +445,6 @@ var gameLogic;
     function isCellFilled_Player1(row, col) {
         var elem = translateToGridElem(row, col);
         if (elem.dir === "cell") {
-            if (state.board.color[elem.row][elem.col] === 'ME') {
-                console.log(elem.dir, elem.row, elem.col);
-            }
             return state.board.color[elem.row][elem.col] === 'ME';
         }
         return false;
@@ -485,8 +484,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
         { millisecondsLimit: 1000 });
     }
     aiService.findComputerMove = findComputerMove;
-    /** helper function to check which edges of a cell are filled and which are not*/
-    //function emptyEdge(row: number, col: number): {}
     function printPossibleMoves(possibleMoves) {
         var output = "possible moves:";
         for (var i = 0; i < possibleMoves.length; ++i) {
@@ -507,7 +504,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
             if (board.hor[tryMove.row][tryMove.col] === 0) {
                 addedMoves.push(stringifyTryMove(tryMove));
                 try {
-                    // console.log("try adding " + stringifyTryMove(tryMove));
                     possibleMoves.push(gameLogic.createMove(board, 'hor', tryMove.row, tryMove.col, turnIndexBeforeMove));
                 }
                 catch (e) {
@@ -542,7 +538,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
                         (i === 0 && board.sum[i][j] === 3) ||
                         (i === gameLogic.ROWSIZE && board.sum[i - 1][j] === 3))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -557,7 +552,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
                         (j === 0 && board.sum[i][j] === 3) ||
                         (j === gameLogic.COLSIZE && board.sum[i][j - 1] === 3))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -575,7 +569,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
                         (i === 0 && (board.sum[i][j] !== 2)) ||
                         (i === gameLogic.ROWSIZE && (board.sum[i - 1][j] !== 2)))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -590,7 +583,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
                         (j === 0 && (board.sum[i][j] !== 2)) ||
                         (j === gameLogic.COLSIZE && (board.sum[i][j - 1] !== 2)))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -605,7 +597,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
             for (var j = 0; j < gameLogic.COLSIZE; j++) {
                 if (board.hor[i][j] === 0) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -617,7 +608,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
             for (var j = 0; j < gameLogic.COLSIZE + 1; j++) {
                 if (board.ver[i][j] === 0) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {

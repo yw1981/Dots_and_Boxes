@@ -126,7 +126,6 @@ module game {
       elem.row = Math.floor(row/2);
       elem.col = Math.floor(col/2);
     }
-    //console.log("%o", elem);
     return elem;
   }
 
@@ -175,9 +174,6 @@ module game {
   export function isCellFilled_Player0(row: number, col: number): boolean {
     var elem = translateToGridElem (row, col);
     if (elem.dir === "cell") {
-      if (state.board.color[elem.row][elem.col] === 'YOU'){
-        console.log(elem.dir, elem.row, elem.col);
-      }
       return state.board.color[elem.row][elem.col] === 'YOU';
     }
     return false;
@@ -186,9 +182,6 @@ module game {
   export function isCellFilled_Player1(row: number, col: number): boolean {
     var elem = translateToGridElem (row, col);
     if (elem.dir === "cell"){
-      if (state.board.color[elem.row][elem.col] === 'ME'){
-        console.log(elem.dir, elem.row, elem.col);
-      }
       return state.board.color[elem.row][elem.col] === 'ME';
     }
     return false;
