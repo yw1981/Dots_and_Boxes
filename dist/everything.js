@@ -1,8 +1,8 @@
 var gameLogic;
 (function (gameLogic) {
-    gameLogic.ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
-    gameLogic.COLSIZE = 3;
-    /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing 24 edges and 9 empty cells */
+    gameLogic.ROWSIZE = 7; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+    gameLogic.COLSIZE = 7;
+    /** Returns the initial Dots_and_Boxes board, which is a 7x7 matrix containing 24 edges and 9 empty cells */
     function create2DArray(rowsize, colsize) {
         var arr = [];
         for (var i = 0; i < rowsize; i++) {
@@ -184,7 +184,7 @@ var gameLogic;
             }
         }
         boardAfterMove.sumAllEdges++;
-        if (boardAfterMove.sumAllEdges === 24) {
+        if (boardAfterMove.sumAllEdges === (gameLogic.ROWSIZE + 1) * gameLogic.COLSIZE + gameLogic.ROWSIZE * (gameLogic.COLSIZE + 1)) {
             boardAfterMove.isGameOver = true;
         }
         return boardAfterMove;
@@ -522,50 +522,6 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
     function getPossibleMoves(board, turnIndexBeforeMove) {
         var possibleMoves = [];
         var addedMoves = [];
-        /*    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-              for (var j = 0; j < gameLogic.COLSIZE; j++) {
-                 if (board.sum[i][j] === 3) {
-                  //  console.log("candidate for l3: " + i + ", " + j);
-                   tryAddPossibleMove(board, {'dir': 'hor', 'row': i, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {'dir': 'hor', 'row': i+1, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {'dir': 'ver', 'row': i, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {'dir': 'ver', 'row': i, 'col': j+1}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                 }
-               }
-             }
-             if (possibleMoves.length >= 1) {
-               //console.log("L03 moves ", possibleMoves.length);
-               return possibleMoves;
-             }
-             for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-               for (var j = 0; j < gameLogic.COLSIZE; j++) {
-                 if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
-                   tryAddPossibleMove(board, {dir: 'hor', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {dir: 'hor', row: i+1, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {dir: 'ver', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {dir: 'ver', row: i, col: j+1}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                 }
-               }
-             }
-            // // console.log("L01 moves ", possibleMoves.length);
-            if (possibleMoves.length >= 1) {
-              return possibleMoves;
-            }
-            for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-               for (var j = 0; j < gameLogic.COLSIZE; j++) {
-                 if (board.sum[i][j] === 2){
-                   tryAddPossibleMove(board, {dir: 'hor', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {dir: 'hor', row: i+1, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {dir: 'ver', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                   tryAddPossibleMove(board, {dir: 'ver', row: i, col: j+1}, turnIndexBeforeMove, possibleMoves, addedMoves);
-                 }
-               }
-             }
-            // //  console.log("L2 moves ", possibleMoves.length);
-            if (possibleMoves.length >= 1) {
-              return possibleMoves;
-            }
-        */
         //check each edge instead of cell to add edges one by one:
         for (var i = 0; i < gameLogic.ROWSIZE + 1; i++) {
             for (var j = 0; j < gameLogic.COLSIZE; j++) {

@@ -78,7 +78,6 @@ module game {
   }
 
   export function cellClicked(row: number, col: number): void {
-    canMakeMove = false; // to prevent making another move
     log.info(["Clicked on cell:", row, col]);
     if (!canMakeMove) return;
     if (window.location.search === '?throwException') { // to test encoding a stack trace with sourcemap

@@ -60,50 +60,6 @@ module aiService {
    export function getPossibleMoves(board: Board, turnIndexBeforeMove: number): IMove[] {
      var possibleMoves: IMove[] = [];
      var addedMoves: string[] = [];
-/*    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-      for (var j = 0; j < gameLogic.COLSIZE; j++) {
-         if (board.sum[i][j] === 3) {
-          //  console.log("candidate for l3: " + i + ", " + j);
-           tryAddPossibleMove(board, {'dir': 'hor', 'row': i, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {'dir': 'hor', 'row': i+1, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {'dir': 'ver', 'row': i, 'col': j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {'dir': 'ver', 'row': i, 'col': j+1}, turnIndexBeforeMove, possibleMoves, addedMoves);
-         }
-       }
-     }
-     if (possibleMoves.length >= 1) {
-       //console.log("L03 moves ", possibleMoves.length);
-       return possibleMoves;
-     }
-     for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-       for (var j = 0; j < gameLogic.COLSIZE; j++) {
-         if (board.sum[i][j] === 0 || board.sum[i][j] === 1) {
-           tryAddPossibleMove(board, {dir: 'hor', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {dir: 'hor', row: i+1, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {dir: 'ver', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {dir: 'ver', row: i, col: j+1}, turnIndexBeforeMove, possibleMoves, addedMoves);
-         }
-       }
-     }
-    // // console.log("L01 moves ", possibleMoves.length);
-    if (possibleMoves.length >= 1) {
-      return possibleMoves;
-    }
-    for (var i = 0; i < gameLogic.ROWSIZE; ++i) {
-       for (var j = 0; j < gameLogic.COLSIZE; j++) {
-         if (board.sum[i][j] === 2){
-           tryAddPossibleMove(board, {dir: 'hor', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {dir: 'hor', row: i+1, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {dir: 'ver', row: i, col: j}, turnIndexBeforeMove, possibleMoves, addedMoves);
-           tryAddPossibleMove(board, {dir: 'ver', row: i, col: j+1}, turnIndexBeforeMove, possibleMoves, addedMoves);
-         }
-       }
-     }
-    // //  console.log("L2 moves ", possibleMoves.length);
-    if (possibleMoves.length >= 1) {
-      return possibleMoves;
-    }
-*/
 
 //check each edge instead of cell to add edges one by one:
 

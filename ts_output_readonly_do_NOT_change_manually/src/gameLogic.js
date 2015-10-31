@@ -1,8 +1,8 @@
 var gameLogic;
 (function (gameLogic) {
-    gameLogic.ROWSIZE = 3; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
-    gameLogic.COLSIZE = 3;
-    /** Returns the initial Dots_and_Boxes board, which is a 3x3 matrix containing 24 edges and 9 empty cells */
+    gameLogic.ROWSIZE = 7; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+    gameLogic.COLSIZE = 7;
+    /** Returns the initial Dots_and_Boxes board, which is a 7x7 matrix containing 24 edges and 9 empty cells */
     function create2DArray(rowsize, colsize) {
         var arr = [];
         for (var i = 0; i < rowsize; i++) {
@@ -184,7 +184,7 @@ var gameLogic;
             }
         }
         boardAfterMove.sumAllEdges++;
-        if (boardAfterMove.sumAllEdges === 24) {
+        if (boardAfterMove.sumAllEdges === (gameLogic.ROWSIZE + 1) * gameLogic.COLSIZE + gameLogic.ROWSIZE * (gameLogic.COLSIZE + 1)) {
             boardAfterMove.isGameOver = true;
         }
         return boardAfterMove;
