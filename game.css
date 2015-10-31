@@ -4,7 +4,7 @@
   /*-webkit-animation-name: highlight_last_move; Chrome, Safari, Opera */
   /*-webkit-animation-duration: 1s; Chrome, Safari, Opera */
   animation-name: highlight_last_move;
-  animation-duration: 1s;
+  animation-duration: 0.5s;
 }
 
 .edge_new {
@@ -13,7 +13,7 @@
   /*-webkit-animation-name: highlight_last_move; Chrome, Safari, Opera */
   /*-webkit-animation-duration: 1s; Chrome, Safari, Opera */
   animation-name: highlight_last_move_new;
-  animation-duration: 1s;
+  animation-duration: 0.5s;
 }
 
 @keyframes highlight_last_move {

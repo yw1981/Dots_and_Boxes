@@ -120,8 +120,8 @@ var game;
             return;
         }
         try {
+            canMakeMove = false; // to prevent making another move
             var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
-            //canMakeMove = false; // to prevent making another move
             gameService.makeMove(move);
         }
         catch (e) {
