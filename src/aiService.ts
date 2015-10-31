@@ -8,9 +8,6 @@ module aiService {
         {millisecondsLimit: 1000})
   }
 
-  /** helper function to check which edges of a cell are filled and which are not*/
-  //function emptyEdge(row: number, col: number): {}
-
   function printPossibleMoves(possibleMoves: IMove[]):void { //helper function
     let output: string = "possible moves:";
     for (var i = 0; i < possibleMoves.length; ++i) {
@@ -34,7 +31,6 @@ module aiService {
       if (board.hor[tryMove.row][tryMove.col] === 0) {
         addedMoves.push(stringifyTryMove(tryMove));
         try {
-          // console.log("try adding " + stringifyTryMove(tryMove));
           possibleMoves.push(gameLogic.createMove(board, 'hor', tryMove.row, tryMove.col, turnIndexBeforeMove));
         } catch (e) {
           // The cell in that position was full.
@@ -65,13 +61,12 @@ module aiService {
 
     for (let i = 0; i < gameLogic.ROWSIZE+1;i++) {
       for (let j = 0; j<gameLogic.COLSIZE; j++) {
-        console.log("i=" + i + ",j=" + j + ", ");
+        //console.log("i=" + i + ",j=" + j + ", ");
         if ( board.hor[i][j]===0 &&
               ( ( i!==0 && i!==gameLogic.ROWSIZE && (board.sum[i-1][j]===3 || board.sum[i][j]===3) ) ||
                 (i===0 && board.sum[i][j]===3) ||
                 (i===gameLogic.ROWSIZE && board.sum[i-1][j]===3) ) ) {
               try {
-                // console.log("try adding " + stringifyTryMove(tryMove));
                 possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
               } catch (e) {
                 // The cell in that position was full.
@@ -87,7 +82,6 @@ module aiService {
                 (j===0 && board.sum[i][j]===3) ||
                 (j===gameLogic.COLSIZE && board.sum[i][j-1]===3) ) ) {
               try {
-                // console.log("try adding " + stringifyTryMove(tryMove));
                 possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
               } catch (e) {
                 // The cell in that position was full.
@@ -106,7 +100,6 @@ module aiService {
                 (i===0 && (board.sum[i][j]!==2) ) ||
                 (i===gameLogic.ROWSIZE && (board.sum[i-1][j]!==2) ) ) ) {
                   try {
-                    // console.log("try adding " + stringifyTryMove(tryMove));
                     possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                   } catch (e) {
                     // The cell in that position was full.
@@ -122,7 +115,6 @@ module aiService {
                 (j===0 && (board.sum[i][j]!==2)) ||
                 (j===gameLogic.COLSIZE && (board.sum[i][j-1]!==2) ) ) ) {
               try {
-                // console.log("try adding " + stringifyTryMove(tryMove));
                 possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
               } catch (e) {
                 // The cell in that position was full.
@@ -138,7 +130,6 @@ module aiService {
       for (let j = 0; j<gameLogic.COLSIZE; j++) {
           if (board.hor[i][j]===0) {
               try {
-                // console.log("try adding " + stringifyTryMove(tryMove));
                 possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
               } catch (e) {
                 // The cell in that position was full.
@@ -151,7 +142,6 @@ module aiService {
       for (let j = 0; j<gameLogic.COLSIZE+1; j++) {
           if (board.ver[i][j]===0) {
               try {
-                // console.log("try adding " + stringifyTryMove(tryMove));
                 possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
               } catch (e) {
                 // The cell in that position was full.
@@ -187,7 +177,7 @@ module aiService {
     // choices are filetered at get possible move time.
     // random select among good choices is not bad
     var moves:IMove[] = getPossibleMoves(board, playerIndex);
-    printPossibleMoves(moves);
+    //printPossibleMoves(moves);
     var random = Math.floor(moves.length * Math.random())
     return moves[random];
   }

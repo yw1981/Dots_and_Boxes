@@ -25,11 +25,12 @@ var game;
     game.init = init;
     function animationEndedCallback() {
         $rootScope.$apply(function () {
-            log.info("Animation ended");
+            log.info("Animation ended - start callback");
             animationEnded = true;
             if (isComputerTurn) {
                 sendComputerMove();
             }
+            log.info("Animation ended - end callback");
         });
     }
     function sendComputerMove() {
@@ -37,9 +38,14 @@ var game;
         //     aiService.createComputerMove(state.board, turnIndex,
         //       // at most 1 second for the AI to choose a move (but might be much quicker)
         //       {millisecondsLimit: 1000}));
+        log.info("sendComputerMove");
+        // log.info("explicitly call udpate UI");
+        // updateUI(lastUpdateUI);
         gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
+        log.info("sendComputerMove..DONE");
     }
     function updateUI(params) {
+        log.info("calling updateUI..");
         animationEnded = false;
         lastUpdateUI = params;
         state = params.stateAfterMove;
@@ -62,9 +68,11 @@ var game;
                 // This is the first move in the match, so
                 // there is not going to be an animation, so
                 // call sendComputerMove() now (can happen in ?onlyAIs mode)
+                log.info("this should be called only once");
                 sendComputerMove();
             }
         }
+        log.info("calling updateUI..DONE");
     }
     function getScore(playerIndex) {
         return state.board.score[playerIndex];
@@ -72,8 +80,10 @@ var game;
     game.getScore = getScore;
     function cellClicked(row, col) {
         log.info(["Clicked on cell:", row, col]);
-        if (!canMakeMove)
+        if (!canMakeMove) {
+            log.info("cannot make move now!");
             return;
+        }
         if (window.location.search === '?throwException') {
             throw new Error("Throwing the error because URL has '?throwException'");
         }
@@ -82,8 +92,8 @@ var game;
             log.info("Clicked on non-action part");
         }
         else {
-            log.info(elem.dir, elem.row, elem.col);
-            gameLogic.printBoard(state.board);
+            //log.info(elem.dir, elem.row, elem.col);
+            //gameLogic.printBoard(state.board);
             cellClickedImpl(elem.dir, elem.row, elem.col);
         }
     }
@@ -120,12 +130,10 @@ var game;
         }
     }
     function cellClickedImpl(dir, row, col) {
-        if (!canMakeMove) {
-            return;
-        }
         try {
-            canMakeMove = false; // to prevent making another move
             var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
+            canMakeMove = false; // to prevent making another move
+            log.info("calling makeMove in cellClickedImpl");
             gameService.makeMove(move);
         }
         catch (e) {

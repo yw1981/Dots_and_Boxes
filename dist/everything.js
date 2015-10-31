@@ -310,6 +310,7 @@ var gameLogic;
         gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
     }
     function updateUI(params) {
+        log.info("calling updateUI..");
         animationEnded = false;
         lastUpdateUI = params;
         state = params.stateAfterMove;
@@ -353,7 +354,7 @@ var gameLogic;
         }
         else {
             log.info(elem.dir, elem.row, elem.col);
-            gameLogic.printBoard(state.board);
+            //gameLogic.printBoard(state.board);
             cellClickedImpl(elem.dir, elem.row, elem.col);
         }
     }
@@ -396,6 +397,7 @@ var gameLogic;
         try {
             canMakeMove = false; // to prevent making another move
             var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
+            log.info("calling makeMove in cellClickedImpl");
             gameService.makeMove(move);
         }
         catch (e) {
@@ -534,7 +536,7 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
         //check each edge instead of cell to add edges one by one:
         for (var i = 0; i < gameLogic.ROWSIZE + 1; i++) {
             for (var j = 0; j < gameLogic.COLSIZE; j++) {
-                console.log("i=" + i + ",j=" + j + ", ");
+                //console.log("i=" + i + ",j=" + j + ", ");
                 if (board.hor[i][j] === 0 &&
                     ((i !== 0 && i !== gameLogic.ROWSIZE && (board.sum[i - 1][j] === 3 || board.sum[i][j] === 3)) ||
                         (i === 0 && board.sum[i][j] === 3) ||
@@ -648,7 +650,7 @@ angular.module('myApp', ['ngTouch', 'ui.bootstrap', 'gameServices'])
         // choices are filetered at get possible move time.
         // random select among good choices is not bad
         var moves = getPossibleMoves(board, playerIndex);
-        printPossibleMoves(moves);
+        //printPossibleMoves(moves);
         var random = Math.floor(moves.length * Math.random());
         return moves[random];
     }
