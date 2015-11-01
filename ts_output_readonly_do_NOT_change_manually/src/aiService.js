@@ -7,8 +7,6 @@ var aiService;
         { millisecondsLimit: 1000 });
     }
     aiService.findComputerMove = findComputerMove;
-    /** helper function to check which edges of a cell are filled and which are not*/
-    //function emptyEdge(row: number, col: number): {}
     function printPossibleMoves(possibleMoves) {
         var output = "possible moves:";
         for (var i = 0; i < possibleMoves.length; ++i) {
@@ -134,7 +132,6 @@ var aiService;
         // choices are filetered at get possible move time.
         // random select among good choices is not bad
         var moves = getPossibleMoves(board, playerIndex);
-        // printPossibleMoves(moves);
         var random = Math.floor(moves.length * Math.random());
         return moves[random];
     }

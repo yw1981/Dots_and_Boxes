@@ -32,11 +32,12 @@ module game {
 
   function animationEndedCallback() {
     $rootScope.$apply(function () {
-      log.info("Animation ended");
+      log.info("Animation ended - start callback");
       animationEnded = true;
       if (isComputerTurn) {
         sendComputerMove();
       }
+      log.info("Animation ended - end callback");
     });
   }
 
@@ -45,10 +46,16 @@ module game {
     //     aiService.createComputerMove(state.board, turnIndex,
     //       // at most 1 second for the AI to choose a move (but might be much quicker)
     //       {millisecondsLimit: 1000}));
+    log.info("sendComputerMove");
+    // log.info("explicitly call udpate UI");
+    // updateUI(lastUpdateUI);
     gameService.makeMove(aiService.findComputerMove(lastUpdateUI));
+
+    log.info("sendComputerMove..DONE");
   }
 
   function updateUI(params: IUpdateUI): void {
+    log.info("calling updateUI..");
     animationEnded = false;
     lastUpdateUI = params;
     state = params.stateAfterMove;
@@ -72,9 +79,11 @@ module game {
         // This is the first move in the match, so
         // there is not going to be an animation, so
         // call sendComputerMove() now (can happen in ?onlyAIs mode)
+        log.info("this should be called only once");
         sendComputerMove();
       }
     }
+    log.info("calling updateUI..DONE");
   }
 
   export function getScore (playerIndex: number): number {
@@ -83,7 +92,10 @@ module game {
 
   export function cellClicked(row: number, col: number): void {
     log.info(["Clicked on cell:", row, col]);
-    if (!canMakeMove) return;
+    if (!canMakeMove) {
+      log.info("cannot make move now!");
+      return;
+    }
     if (window.location.search === '?throwException') { // to test encoding a stack trace with sourcemap
       throw new Error("Throwing the error because URL has '?throwException'");
     }
@@ -127,12 +139,10 @@ module game {
   }
 
   function cellClickedImpl(dir: string, row: number, col: number): void {
-    if (!canMakeMove) {
-      return;
-    }
     try {
-      canMakeMove = false; // to prevent making another move
       var move = gameLogic.createMove(state.board, dir, row, col, lastUpdateUI.turnIndexAfterMove);
+      canMakeMove = false; // to prevent making another move
+      log.info("calling makeMove in cellClickedImpl");
       gameService.makeMove(move);
     } catch (e) {
       log.info(["Cell is already full in position:", dir, row, col]);
