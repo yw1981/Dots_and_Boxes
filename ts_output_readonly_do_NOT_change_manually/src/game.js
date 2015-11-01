@@ -83,7 +83,7 @@ var game;
         }
         else {
             log.info(elem.dir, elem.row, elem.col);
-            gameLogic.printBoard(state.board);
+            //gameLogic.printBoard(state.board);
             cellClickedImpl(elem.dir, elem.row, elem.col);
         }
     }

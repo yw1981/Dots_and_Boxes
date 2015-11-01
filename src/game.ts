@@ -92,7 +92,7 @@ module game {
       log.info ("Clicked on non-action part");
     } else {
       log.info(elem.dir, elem.row, elem.col);
-      gameLogic.printBoard(state.board);
+      //gameLogic.printBoard(state.board);
       cellClickedImpl(elem.dir, elem.row, elem.col);
     }
   }

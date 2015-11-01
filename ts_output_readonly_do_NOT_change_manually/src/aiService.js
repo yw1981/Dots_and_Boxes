@@ -17,37 +17,6 @@ var aiService;
         console.log("possibleMoves.length = " + possibleMoves.length);
         console.log(output);
     }
-    function stringifyTryMove(tryMove) {
-        return "dir:" + tryMove.dir + "row:" + tryMove.row + "col:" + tryMove.col;
-    }
-    function tryAddPossibleMove(board, tryMove, turnIndexBeforeMove, possibleMoves, addedMoves) {
-        // console.log(stringifyTryMove(tryMove));
-        if (addedMoves.indexOf(stringifyTryMove(tryMove)) !== -1) {
-            return;
-        }
-        if (tryMove.dir === 'hor') {
-            if (board.hor[tryMove.row][tryMove.col] === 0) {
-                addedMoves.push(stringifyTryMove(tryMove));
-                try {
-                    // console.log("try adding " + stringifyTryMove(tryMove));
-                    possibleMoves.push(gameLogic.createMove(board, 'hor', tryMove.row, tryMove.col, turnIndexBeforeMove));
-                }
-                catch (e) {
-                }
-            }
-        }
-        else if (tryMove.dir === 'ver') {
-            if (board.ver[tryMove.row][tryMove.col] === 0) {
-                addedMoves.push(stringifyTryMove(tryMove));
-                try {
-                    //console.log("try adding " + stringifyTryMove(tryMove));
-                    possibleMoves.push(gameLogic.createMove(board, 'ver', tryMove.row, tryMove.col, turnIndexBeforeMove));
-                }
-                catch (e) {
-                }
-            }
-        }
-    }
     /**
      * Returns all the possible moves for the given board and turnIndexBeforeMove.
      * Returns an empty array if the game is over.
@@ -55,16 +24,14 @@ var aiService;
     function getPossibleMoves(board, turnIndexBeforeMove) {
         var possibleMoves = [];
         var addedMoves = [];
-        //check each edge instead of cell to add edges one by one:
         for (var i = 0; i < gameLogic.ROWSIZE + 1; i++) {
             for (var j = 0; j < gameLogic.COLSIZE; j++) {
-                console.log("i=" + i + ",j=" + j + ", ");
+                //console.log("i=" + i + ",j=" + j + ", ");
                 if (board.hor[i][j] === 0 &&
                     ((i !== 0 && i !== gameLogic.ROWSIZE && (board.sum[i - 1][j] === 3 || board.sum[i][j] === 3)) ||
                         (i === 0 && board.sum[i][j] === 3) ||
                         (i === gameLogic.ROWSIZE && board.sum[i - 1][j] === 3))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -79,7 +46,6 @@ var aiService;
                         (j === 0 && board.sum[i][j] === 3) ||
                         (j === gameLogic.COLSIZE && board.sum[i][j - 1] === 3))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -97,7 +63,6 @@ var aiService;
                         (i === 0 && (board.sum[i][j] !== 2)) ||
                         (i === gameLogic.ROWSIZE && (board.sum[i - 1][j] !== 2)))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -112,7 +77,6 @@ var aiService;
                         (j === 0 && (board.sum[i][j] !== 2)) ||
                         (j === gameLogic.COLSIZE && (board.sum[i][j - 1] !== 2)))) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -127,7 +91,6 @@ var aiService;
             for (var j = 0; j < gameLogic.COLSIZE; j++) {
                 if (board.hor[i][j] === 0) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'hor', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -139,7 +102,6 @@ var aiService;
             for (var j = 0; j < gameLogic.COLSIZE + 1; j++) {
                 if (board.ver[i][j] === 0) {
                     try {
-                        // console.log("try adding " + stringifyTryMove(tryMove));
                         possibleMoves.push(gameLogic.createMove(board, 'ver', i, j, turnIndexBeforeMove));
                     }
                     catch (e) {
@@ -172,7 +134,7 @@ var aiService;
         // choices are filetered at get possible move time.
         // random select among good choices is not bad
         var moves = getPossibleMoves(board, playerIndex);
-        printPossibleMoves(moves);
+        // printPossibleMoves(moves);
         var random = Math.floor(moves.length * Math.random());
         return moves[random];
     }
@@ -180,7 +142,6 @@ var aiService;
     function getStateScoreForIndex0(move, playerIndex) {
         //return move[1].set.value.score[0] - move[1].set.value.score[1];
         if (move[0].endMatch) {
-            //console.log("%o", move[0]);
             var endMatchScores = move[0].endMatch.endMatchScores;
             return endMatchScores[0] > endMatchScores[1] ? Number.POSITIVE_INFINITY
                 : endMatchScores[0] < endMatchScores[1] ? Number.NEGATIVE_INFINITY
