@@ -15,7 +15,7 @@
   animation-name: highlight_last_move_new;
   animation-duration: 0.5s;
 }
-
+/*
 @keyframes highlight_last_move {
     from {background-color: yellow;}
     to {background-color: #9999FF;}
@@ -25,6 +25,18 @@
     from {background-color: yellow;}
     to {background-color: #FF6600;}
 }
+*/
+
+@asdf highlight_last_move {
+    from {background-color: yellow;}
+    to {background-color: #9999FF;}
+}
+
+@asdf highlight_last_move_new {
+    from {background-color: yellow;}
+    to {background-color: #FF6600;}
+}
+
 
 .cell_player0 {
   background: #ff9933; //orange
