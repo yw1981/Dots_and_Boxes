@@ -4,7 +4,7 @@
   /*-webkit-animation-name: highlight_last_move; Chrome, Safari, Opera */
   /*-webkit-animation-duration: 1s; Chrome, Safari, Opera */
   animation-name: highlight_last_move;
-  animation-duration: 0.5s;
+  animation-duration: 0.01s;
 }
 
 .edge_new {
@@ -13,7 +13,7 @@
   /*-webkit-animation-name: highlight_last_move; Chrome, Safari, Opera */
   /*-webkit-animation-duration: 1s; Chrome, Safari, Opera */
   animation-name: highlight_last_move_new;
-  animation-duration: 0.5s;
+  animation-duration: 0.01s;
 }
 /*
 @keyframes highlight_last_move {
@@ -54,11 +54,11 @@
 }
 
 .slowlyAppear {
-	-webkit-animation: slowlyAppear 0.5s linear;
-	-moz-animation: slowlyAppear 0.5s linear;
-	-ms-animation: slowlyAppear 0.5s linear;
-	-o-animation: slowlyAppear 0.5s linear;
-	animation: slowlyAppear 0.5s linear;
+	-webkit-animation: slowlyAppear 0.01s linear;
+	-moz-animation: slowlyAppear 0.01s linear;
+	-ms-animation: slowlyAppear 0.01s linear;
+	-o-animation: slowlyAppear 0.01s linear;
+	animation: slowlyAppear 0.01s linear;
 }
 
 @-webkit-keyframes slowlyAppear {
