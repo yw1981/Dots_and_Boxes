@@ -215,6 +215,7 @@ module.exports = function(grunt) {
     },
   });
 
+  grunt.loadNpmTasks('grunt-autoprefixer');
   require('load-grunt-tasks')(grunt);
 
   // Default task(s).
