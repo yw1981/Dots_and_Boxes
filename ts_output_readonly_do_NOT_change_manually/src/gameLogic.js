@@ -1,7 +1,7 @@
 var gameLogic;
 (function (gameLogic) {
-    gameLogic.ROWSIZE = 6; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
-    gameLogic.COLSIZE = 6;
+    gameLogic.ROWSIZE = 7; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+    gameLogic.COLSIZE = 7;
     /** Returns the initial Dots_and_Boxes board, which is a 7x7 matrix containing 24 edges and 9 empty cells */
     function create2DArray(rowsize, colsize) {
         var arr = [];

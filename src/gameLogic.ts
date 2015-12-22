@@ -20,8 +20,8 @@ interface IState {
 }
 
 module gameLogic {
-  export const ROWSIZE = 6; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
-  export const COLSIZE = 6;
+  export const ROWSIZE = 7; //convenient to change board size later; ROWSIZE and COLSIZE does not need to be the same either.
+  export const COLSIZE = 7;
   /** Returns the initial Dots_and_Boxes board, which is a 7x7 matrix containing 24 edges and 9 empty cells */
   function create2DArray(rowsize: number, colsize: number) {
     var arr: any[] = [];
